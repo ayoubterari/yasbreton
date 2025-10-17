@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { api, Formation, FormationSection, FormationLesson } from '../lib/convex-client'
+import { api, Formation, FormationSection, FormationLesson, FileResource } from '../lib/convex-client'
 import './FormationEditor.css'
 
 export default function FormationEditor() {
@@ -23,16 +23,29 @@ export default function FormationEditor() {
   const [lessonData, setLessonData] = useState({
     title: '',
     description: '',
+    lessonType: 'video' as 'video' | 'resource',
     videoUrl: '',
+    resourceId: '',
     duration: 0,
     isFree: false
   })
+  const [resources, setResources] = useState<FileResource[]>([])
 
   useEffect(() => {
     if (formationId) {
       loadFormationData()
+      loadResources()
     }
   }, [formationId])
+
+  const loadResources = async () => {
+    try {
+      const allResources = await api.files.getFiles()
+      setResources(allResources)
+    } catch (error) {
+      console.error('Erreur lors du chargement des ressources:', error)
+    }
+  }
 
   const loadFormationData = async () => {
     try {
@@ -109,7 +122,7 @@ export default function FormationEditor() {
   // Gestion des leçons
   const handleAddLesson = (sectionId: string) => {
     setSelectedSectionId(sectionId)
-    setLessonData({ title: '', description: '', videoUrl: '', duration: 0, isFree: false })
+    setLessonData({ title: '', description: '', lessonType: 'video', videoUrl: '', resourceId: '', duration: 0, isFree: false })
     setEditingLesson(null)
     setShowLessonModal(true)
   }
@@ -120,7 +133,9 @@ export default function FormationEditor() {
     setLessonData({
       title: lesson.title,
       description: lesson.description || '',
-      videoUrl: lesson.videoUrl,
+      lessonType: lesson.lessonType || 'video',
+      videoUrl: lesson.videoUrl || '',
+      resourceId: lesson.resourceId || '',
       duration: lesson.duration,
       isFree: lesson.isFree || false
     })
@@ -130,17 +145,31 @@ export default function FormationEditor() {
   const handleSaveLesson = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      const lessonPayload: any = {
+        title: lessonData.title,
+        description: lessonData.description,
+        lessonType: lessonData.lessonType,
+        duration: lessonData.duration,
+        isFree: lessonData.isFree
+      }
+
+      if (lessonData.lessonType === 'video') {
+        lessonPayload.videoUrl = lessonData.videoUrl
+      } else {
+        lessonPayload.resourceId = lessonData.resourceId
+      }
+
       if (editingLesson) {
         await api.formations.updateLesson({
           lessonId: editingLesson._id,
-          ...lessonData
+          ...lessonPayload
         })
       } else {
         const sectionLessons = lessons[selectedSectionId] || []
         await api.formations.createLesson({
           sectionId: selectedSectionId,
           formationId: formationId!,
-          ...lessonData,
+          ...lessonPayload,
           order: sectionLessons.length
         })
       }
@@ -251,14 +280,22 @@ export default function FormationEditor() {
                     lessons[section._id].map((lesson, lessonIndex) => (
                       <div key={lesson._id} className="lesson-item">
                         <div className="lesson-icon">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polygon points="5 3 19 12 5 21 5 3"/>
-                          </svg>
+                          {lesson.lessonType === 'resource' ? (
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                              <polyline points="13 2 13 9 20 9"/>
+                            </svg>
+                          ) : (
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                          )}
                         </div>
                         <div className="lesson-info">
                           <div className="lesson-title">
                             <span className="lesson-number">Leçon {lessonIndex + 1}</span>
                             <span>{lesson.title}</span>
+                            {lesson.lessonType === 'resource' && <span className="badge-free" style={{ background: '#10b981' }}>RESSOURCE</span>}
                             {lesson.isFree && <span className="badge-free">Gratuit</span>}
                           </div>
                           <span className="lesson-duration">{lesson.duration} min</span>
@@ -348,17 +385,66 @@ export default function FormationEditor() {
                   rows={3}
                 />
               </div>
+              
+              {/* Type de leçon */}
               <div className="form-group">
-                <label htmlFor="lessonVideoUrl">URL de la vidéo YouTube *</label>
-                <input
-                  type="url"
-                  id="lessonVideoUrl"
-                  value={lessonData.videoUrl}
-                  onChange={(e) => setLessonData({ ...lessonData, videoUrl: e.target.value })}
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  required
-                />
+                <label>Type de leçon *</label>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="lessonType"
+                      value="video"
+                      checked={lessonData.lessonType === 'video'}
+                      onChange={() => setLessonData({ ...lessonData, lessonType: 'video' })}
+                    />
+                    <span>Vidéo YouTube</span>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="lessonType"
+                      value="resource"
+                      checked={lessonData.lessonType === 'resource'}
+                      onChange={() => setLessonData({ ...lessonData, lessonType: 'resource' })}
+                    />
+                    <span>Ressource (fichier)</span>
+                  </label>
+                </div>
               </div>
+
+              {/* Champ conditionnel selon le type */}
+              {lessonData.lessonType === 'video' ? (
+                <div className="form-group">
+                  <label htmlFor="lessonVideoUrl">URL de la vidéo YouTube *</label>
+                  <input
+                    type="url"
+                    id="lessonVideoUrl"
+                    value={lessonData.videoUrl}
+                    onChange={(e) => setLessonData({ ...lessonData, videoUrl: e.target.value })}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    required
+                  />
+                </div>
+              ) : (
+                <div className="form-group">
+                  <label htmlFor="lessonResource">Sélectionner une ressource *</label>
+                  <select
+                    id="lessonResource"
+                    value={lessonData.resourceId}
+                    onChange={(e) => setLessonData({ ...lessonData, resourceId: e.target.value })}
+                    required
+                  >
+                    <option value="">-- Choisir une ressource --</option>
+                    {resources.map((resource) => (
+                      <option key={resource._id} value={resource._id}>
+                        {resource.titleFr} ({resource.type === 'premium' ? 'Premium' : 'Gratuit'})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div className="form-group">
                 <label htmlFor="lessonDuration">Durée (minutes) *</label>
                 <input

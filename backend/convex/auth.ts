@@ -83,6 +83,7 @@ export const login = mutation({
       isPremium: user.isPremium,
       premiumExpiresAt: user.premiumExpiresAt,
       subscriptionType: user.subscriptionType,
+      permissions: user.permissions,
       createdAt: user.createdAt,
     };
   },
@@ -109,6 +110,7 @@ export const getUserById = query({
       isPremium: user.isPremium,
       premiumExpiresAt: user.premiumExpiresAt,
       subscriptionType: user.subscriptionType,
+      permissions: user.permissions,
       createdAt: user.createdAt,
     };
   },

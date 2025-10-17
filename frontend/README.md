@@ -69,3 +69,59 @@ import { api } from './lib/convex-client'
 
 const users = await api.users.getAll()
 ```
+
+## Déploiement sur Vercel
+
+### Prérequis
+- Un compte Vercel (https://vercel.com)
+- Le projet poussé sur GitHub/GitLab/Bitbucket
+
+### Étapes de déploiement
+
+1. **Connectez votre repository**
+   - Allez sur https://vercel.com/new
+   - Importez votre repository GitHub
+
+2. **Configuration du projet**
+   - Framework Preset: **Vite**
+   - Root Directory: `frontend`
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+
+3. **Variables d'environnement**
+   Ajoutez dans les paramètres Vercel :
+   ```
+   VITE_CONVEX_URL=https://your-convex-deployment.convex.cloud
+   ```
+
+4. **Déployer**
+   - Cliquez sur "Deploy"
+   - Vercel construira et déploiera automatiquement votre application
+
+### Déploiement via CLI
+
+```bash
+# Installer Vercel CLI
+npm i -g vercel
+
+# Se connecter
+vercel login
+
+# Déployer
+vercel
+
+# Déployer en production
+vercel --prod
+```
+
+### Configuration automatique
+
+Le fichier `vercel.json` est déjà configuré avec :
+- Redirections SPA (Single Page Application)
+- Cache optimisé pour les assets
+- Configuration du build
+
+### Mises à jour automatiques
+
+Une fois configuré, chaque push sur la branche principale déclenchera automatiquement un nouveau déploiement.

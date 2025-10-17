@@ -196,7 +196,9 @@ export const createLesson = mutation({
     formationId: v.id("formations"),
     title: v.string(),
     description: v.optional(v.string()),
-    videoUrl: v.string(),
+    lessonType: v.optional(v.union(v.literal("video"), v.literal("resource"))),
+    videoUrl: v.optional(v.string()),
+    resourceId: v.optional(v.id("files")),
     duration: v.number(),
     order: v.number(),
     isFree: v.optional(v.boolean()),
@@ -207,7 +209,9 @@ export const createLesson = mutation({
       formationId: args.formationId,
       title: args.title,
       description: args.description,
+      lessonType: args.lessonType || "video",
       videoUrl: args.videoUrl,
+      resourceId: args.resourceId,
       duration: args.duration,
       order: args.order,
       isFree: args.isFree || false,
@@ -253,7 +257,9 @@ export const updateLesson = mutation({
     lessonId: v.id("formationLessons"),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
+    lessonType: v.optional(v.union(v.literal("video"), v.literal("resource"))),
     videoUrl: v.optional(v.string()),
+    resourceId: v.optional(v.id("files")),
     duration: v.optional(v.number()),
     order: v.optional(v.number()),
     isFree: v.optional(v.boolean()),
@@ -278,5 +284,118 @@ export const deleteLesson = mutation({
   handler: async (ctx, args) => {
     await ctx.db.patch(args.lessonId, { deleted: true });
     return { success: true };
+  },
+});
+
+// ========== INSCRIPTIONS ==========
+
+// Inscrire un utilisateur à une formation
+export const enrollUser = mutation({
+  args: {
+    userId: v.id("users"),
+    formationId: v.id("formations"),
+  },
+  handler: async (ctx, args) => {
+    // Vérifier si l'utilisateur est déjà inscrit
+    const existingEnrollment = await ctx.db
+      .query("formationEnrollments")
+      .withIndex("by_user_formation", (q) => 
+        q.eq("userId", args.userId).eq("formationId", args.formationId)
+      )
+      .first();
+
+    if (existingEnrollment) {
+      return { success: true, alreadyEnrolled: true };
+    }
+
+    // Récupérer la formation pour vérifier le prix
+    const formation = await ctx.db.get(args.formationId);
+    if (!formation) {
+      throw new Error("Formation introuvable");
+    }
+
+    // Créer l'inscription
+    const enrollmentId = await ctx.db.insert("formationEnrollments", {
+      userId: args.userId,
+      formationId: args.formationId,
+      enrolledAt: Date.now(),
+      paymentStatus: formation.price > 0 ? "paid" : "free",
+    });
+
+    return { success: true, enrollmentId, alreadyEnrolled: false };
+  },
+});
+
+// Vérifier si un utilisateur est inscrit à une formation
+export const isUserEnrolled = query({
+  args: {
+    userId: v.id("users"),
+    formationId: v.id("formations"),
+  },
+  handler: async (ctx, args) => {
+    const enrollment = await ctx.db
+      .query("formationEnrollments")
+      .withIndex("by_user_formation", (q) => 
+        q.eq("userId", args.userId).eq("formationId", args.formationId)
+      )
+      .first();
+
+    return !!enrollment;
+  },
+});
+
+// Obtenir toutes les inscriptions d'un utilisateur
+export const getUserEnrollments = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const enrollments = await ctx.db
+      .query("formationEnrollments")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    return enrollments;
+  },
+});
+
+// Obtenir les statistiques d'inscription d'une formation
+export const getFormationEnrollmentStats = query({
+  args: { formationId: v.id("formations") },
+  handler: async (ctx, args) => {
+    // Récupérer toutes les inscriptions pour cette formation
+    const enrollments = await ctx.db
+      .query("formationEnrollments")
+      .withIndex("by_formation", (q) => q.eq("formationId", args.formationId))
+      .collect();
+
+    // Récupérer les informations des utilisateurs inscrits
+    const enrollmentsWithUsers = await Promise.all(
+      enrollments.map(async (enrollment) => {
+        const user = await ctx.db.get(enrollment.userId);
+        return {
+          enrollmentId: enrollment._id,
+          enrolledAt: enrollment.enrolledAt,
+          paymentStatus: enrollment.paymentStatus,
+          user: user ? {
+            id: user._id,
+            nom: user.nom,
+            prenom: user.prenom,
+            email: user.email,
+            isPremium: user.isPremium,
+          } : null,
+        };
+      })
+    );
+
+    // Statistiques globales
+    const totalEnrollments = enrollments.length;
+    const freeEnrollments = enrollments.filter(e => e.paymentStatus === "free").length;
+    const paidEnrollments = enrollments.filter(e => e.paymentStatus === "paid").length;
+
+    return {
+      totalEnrollments,
+      freeEnrollments,
+      paidEnrollments,
+      enrollments: enrollmentsWithUsers.sort((a, b) => b.enrolledAt - a.enrolledAt),
+    };
   },
 });

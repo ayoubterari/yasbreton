@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import PaymentModal from './PaymentModal.tsx'
 import './PremiumSection.css'
 
@@ -13,6 +15,8 @@ interface PremiumSectionProps {
 }
 
 export default function PremiumSection({ user }: PremiumSectionProps) {
+  const navigate = useNavigate()
+  const { refreshUser } = useAuth()
   const [selectedPackage, setSelectedPackage] = useState<'monthly' | 'quarterly' | 'yearly' | null>(null)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
 
@@ -69,8 +73,10 @@ export default function PremiumSection({ user }: PremiumSectionProps) {
   const handlePaymentSuccess = async () => {
     setShowPaymentModal(false)
     setSelectedPackage(null)
-    // Forcer le rechargement de la page pour mettre à jour les données utilisateur
-    window.location.reload()
+    // Rafraîchir les données utilisateur pour mettre à jour le statut premium
+    await refreshUser()
+    // Rediriger vers la page ressources après l'achat
+    navigate('/resources')
   }
 
   const formatDate = (timestamp: number) => {

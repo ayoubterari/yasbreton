@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { api, Formation } from '../lib/convex-client'
+import FormationStatsModal from './FormationStatsModal'
 import './FormationsManagement.css'
 
 export default function FormationsManagement() {
@@ -10,6 +11,8 @@ export default function FormationsManagement() {
   const [formations, setFormations] = useState<Formation[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [showStatsModal, setShowStatsModal] = useState(false)
+  const [selectedFormation, setSelectedFormation] = useState<Formation | null>(null)
   const [editingFormation, setEditingFormation] = useState<Formation | null>(null)
   
   const [formData, setFormData] = useState({
@@ -381,6 +384,21 @@ export default function FormationsManagement() {
                     </svg>
                     Gérer le contenu
                   </button>
+                  <button 
+                    className="btn-stats"
+                    onClick={() => {
+                      setSelectedFormation(formation)
+                      setShowStatsModal(true)
+                    }}
+                    title="Statistiques"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="12" y1="20" x2="12" y2="10"/>
+                      <line x1="18" y1="20" x2="18" y2="4"/>
+                      <line x1="6" y1="20" x2="6" y2="16"/>
+                    </svg>
+                    Statistiques
+                  </button>
                   <button className="btn-icon" onClick={() => handleEdit(formation)} title="Modifier">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
@@ -411,6 +429,18 @@ export default function FormationsManagement() {
           ))
         )}
       </div>
+
+      {/* Modal de statistiques */}
+      {selectedFormation && (
+        <FormationStatsModal
+          isOpen={showStatsModal}
+          onClose={() => {
+            setShowStatsModal(false)
+            setSelectedFormation(null)
+          }}
+          formation={selectedFormation}
+        />
+      )}
     </div>
   )
 }

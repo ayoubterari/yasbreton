@@ -172,6 +172,314 @@
   font-weight: 600;
 }
 
+/* Domaines Section */
+.domains-section {
+  background: white;
+  padding: 3rem 0;
+  margin: 2rem 0;
+}
+
+.domains-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.domains-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 2rem;
+}
+
+.domains-title svg {
+  color: #0EA5E9;
+}
+
+.domains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.domain-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.domain-card {
+  background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+  border: 2px solid #E0F2FE;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.domain-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #0EA5E9 0%, #38BDF8 100%);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.domain-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(14, 165, 233, 0.15);
+  border-color: #BAE6FD;
+}
+
+.domain-card:hover::before {
+  transform: scaleY(1);
+}
+
+.domain-card.selected {
+  background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%);
+  border-color: #0EA5E9;
+  color: white;
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
+}
+
+.domain-card.selected::before {
+  transform: scaleY(1);
+  background: white;
+}
+
+.domain-icon {
+  width: 56px;
+  height: 56px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.domain-card.selected .domain-icon {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.domain-icon svg {
+  color: #0EA5E9;
+}
+
+.domain-card.selected .domain-icon svg {
+  color: white;
+}
+
+.domain-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.domain-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 0.5rem;
+  transition: color 0.3s;
+}
+
+.domain-card.selected .domain-name {
+  color: white;
+}
+
+.domain-description {
+  font-size: 0.875rem;
+  color: #64748B;
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+  transition: color 0.3s;
+}
+
+.domain-card.selected .domain-description {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.domain-meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.task-count,
+.subdomain-count {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0EA5E9;
+  transition: color 0.3s;
+}
+
+.domain-card.selected .task-count,
+.domain-card.selected .subdomain-count {
+  color: white;
+}
+
+.task-count svg,
+.subdomain-count svg {
+  flex-shrink: 0;
+}
+
+.domain-arrow {
+  width: 32px;
+  height: 32px;
+  background: rgba(14, 165, 233, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.domain-card.selected .domain-arrow {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+}
+
+.domain-arrow svg {
+  color: #0EA5E9;
+  transition: color 0.3s;
+}
+
+.domain-card.selected .domain-arrow svg {
+  color: white;
+}
+
+/* Sous-domaines */
+.subdomains-container {
+  display: grid;
+  gap: 0.75rem;
+  padding-left: 2rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.subdomain-card {
+  background: white;
+  border: 2px solid #E0F2FE;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.subdomain-card:hover {
+  border-color: #BAE6FD;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+  transform: translateX(4px);
+}
+
+.subdomain-card.selected {
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  border-color: #0EA5E9;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+
+.subdomain-indicator {
+  width: 8px;
+  height: 8px;
+  background: #0EA5E9;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.subdomain-card.selected .subdomain-indicator {
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%);
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.2);
+}
+
+.subdomain-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.subdomain-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0F172A;
+  margin: 0 0 0.25rem;
+}
+
+.subdomain-description {
+  font-size: 0.8125rem;
+  color: #64748B;
+  margin: 0 0 0.5rem;
+  line-height: 1.4;
+}
+
+.subdomain-task-count {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #0EA5E9;
+}
+
+.subdomain-check {
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: checkPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkPop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.subdomain-check svg {
+  color: white;
+}
+
 /* Tasks Grid */
 .tasks-grid-container {
   max-width: 1400px;

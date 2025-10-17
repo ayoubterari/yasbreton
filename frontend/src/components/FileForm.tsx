@@ -65,7 +65,7 @@ export default function FileForm({ file, categories, onClose, onSuccess, userId 
     }
   }
 
-  const uploadFile = async (file: File): Promise<string> => {
+  const uploadFile = async (file: File): Promise<{ fileUrl: string; storageId: string }> => {
     try {
       // Étape 1 : Obtenir une URL d'upload depuis Convex
       const uploadUrl = await api.files.generateUploadUrl()
@@ -90,7 +90,7 @@ export default function FileForm({ file, categories, onClose, onSuccess, userId 
         throw new Error('Impossible d\'obtenir l\'URL du fichier')
       }
       
-      return fileUrl
+      return { fileUrl, storageId }
     } catch (error) {
       console.error('Erreur lors de l\'upload:', error)
       throw new Error('Impossible d\'uploader le fichier')
@@ -122,6 +122,7 @@ export default function FileForm({ file, categories, onClose, onSuccess, userId 
       }
 
       let fileUrl = file?.fileUrl || ''
+      let storageId = file?.storageId || ''
       let fileName = file?.fileName || ''
       let fileType = file?.fileType || ''
       let fileSize = file?.fileSize || 0
@@ -129,7 +130,9 @@ export default function FileForm({ file, categories, onClose, onSuccess, userId 
       // Upload du fichier si un nouveau fichier est sélectionné
       if (selectedFile) {
         setUploading(true)
-        fileUrl = await uploadFile(selectedFile)
+        const uploadResult = await uploadFile(selectedFile)
+        fileUrl = uploadResult.fileUrl
+        storageId = uploadResult.storageId
         fileName = selectedFile.name
         fileType = selectedFile.type
         fileSize = selectedFile.size
@@ -148,6 +151,7 @@ export default function FileForm({ file, categories, onClose, onSuccess, userId 
         await api.files.createFile({
           ...formData,
           fileUrl,
+          storageId,
           fileName,
           fileType,
           fileSize,

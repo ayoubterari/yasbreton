@@ -88,6 +88,7 @@ export const createFile = mutation({
     tags: v.array(v.string()),
     type: v.union(v.literal("free"), v.literal("premium")),
     fileUrl: v.string(),
+    storageId: v.optional(v.id("_storage")),
     fileName: v.string(),
     fileType: v.string(),
     fileSize: v.number(),
@@ -140,9 +141,20 @@ export const getFileById = query({
   args: { fileId: v.id("files") },
   handler: async (ctx, args) => {
     const file = await ctx.db.get(args.fileId);
+    
     if (!file || file.deleted) {
       return null;
     }
+
+    // Si le fichier a un storageId, récupérer l'URL réelle depuis Convex Storage
+    if (file.storageId) {
+      const url = await ctx.storage.getUrl(file.storageId);
+      return {
+        ...file,
+        fileUrl: url || file.fileUrl, // Utiliser l'URL de storage ou fallback sur fileUrl
+      };
+    }
+
     return file;
   },
 });

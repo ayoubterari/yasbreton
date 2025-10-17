@@ -471,6 +471,32 @@
   box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
 }
 
+.btn-read.btn-premium-locked {
+  background: #F1F5F9;
+  color: #94A3B8;
+  border-color: #E2E8F0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-read.btn-premium-locked:hover {
+  background: #F1F5F9;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-read.btn-login-required {
+  background: white;
+  color: #F59E0B;
+  border-color: #F59E0B;
+}
+
+.btn-read.btn-login-required:hover {
+  background: #FEF3C7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
 .btn-download {
   display: flex;
   align-items: center;
@@ -504,16 +530,16 @@
   box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
 }
 
-.btn-premium-locked {
-  background: linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%);
-  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
-  cursor: not-allowed;
-  opacity: 0.8;
+.btn-download.btn-premium-locked {
+  background: linear-gradient(135deg, #F59E0B 0%, #EAB308 100%);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  cursor: pointer;
+  opacity: 1;
 }
 
-.btn-premium-locked:hover {
-  transform: none;
-  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+.btn-download.btn-premium-locked:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
 }
 
 /* Loading State */

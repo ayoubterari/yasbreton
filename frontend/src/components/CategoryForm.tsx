@@ -70,6 +70,15 @@ export default function CategoryForm({
     }
   }
 
+  // Fonction pour vérifier si une catégorie est un descendant
+  const isDescendant = (cat: Category, ancestorId: string, cats: Category[]): boolean => {
+    if (!cat.parentId) return false
+    if (cat.parentId === ancestorId) return true
+    const parent = cats.find(c => c._id === cat.parentId)
+    if (!parent) return false
+    return isDescendant(parent, ancestorId, cats)
+  }
+
   // Filtrer les catégories pour éviter les boucles
   const availableParents = allCategories.filter(cat => {
     // Ne pas inclure la catégorie elle-même
@@ -80,14 +89,6 @@ export default function CategoryForm({
     
     return true
   })
-
-  const isDescendant = (cat: Category, ancestorId: string, cats: Category[]): boolean => {
-    if (!cat.parentId) return false
-    if (cat.parentId === ancestorId) return true
-    const parent = cats.find(c => c._id === cat.parentId)
-    if (!parent) return false
-    return isDescendant(parent, ancestorId, cats)
-  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>

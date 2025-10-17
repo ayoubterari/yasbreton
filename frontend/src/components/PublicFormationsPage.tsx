@@ -147,59 +147,80 @@ export default function PublicFormationsPage() {
         ) : (
           <div className="formations-grid">
             {filteredFormations.map(formation => (
-              <div key={formation._id} className="formation-card">
-                {formation.thumbnail ? (
-                  <div className="formation-thumbnail">
-                    <img src={formation.thumbnail} alt={formation.title} />
-                    {formation.isPremium && (
-                      <span className="badge-premium">Premium</span>
-                    )}
-                  </div>
-                ) : (
-                  <div className="formation-thumbnail placeholder">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              <div key={formation._id} className="formation-card" onClick={() => navigate(`/formations/${formation._id}`)}>
+                <div className="formation-thumbnail-wrapper">
+                  {formation.thumbnail ? (
+                    <img 
+                      src={formation.thumbnail} 
+                      alt={formation.title}
+                      className="formation-thumbnail-img"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const placeholder = target.nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div className="formation-thumbnail-placeholder" style={{ display: formation.thumbnail ? 'none' : 'flex' }}>
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
-                    {formation.isPremium && (
-                      <span className="badge-premium">Premium</span>
-                    )}
                   </div>
-                )}
+                  <div className="formation-overlay">
+                    <div className="overlay-content">
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.2)" stroke="white"/>
+                        <polygon points="10 8 16 12 10 16 10 8" fill="white"/>
+                      </svg>
+                      <span>Voir la formation</span>
+                    </div>
+                  </div>
+                  {formation.isPremium && (
+                    <span className="badge-premium">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                      </svg>
+                      Premium
+                    </span>
+                  )}
+                </div>
                 
                 <div className="formation-body">
-                  <div className="formation-category">{formation.category}</div>
-                  <h3 className="formation-title">{formation.title}</h3>
-                  <p className="formation-instructor">Par {formation.instructor}</p>
-                  <p className="formation-description">{formation.description}</p>
-                  
-                  <div className="formation-meta">
+                  <div className="formation-header">
+                    <span className="formation-category">{formation.category}</span>
                     <span className="meta-badge level">
                       {getLevelLabel(formation.level)}
                     </span>
-                    <span className="meta-badge duration">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12 6 12 12 16 14"/>
-                      </svg>
-                      {formatDuration(formation.duration)}
-                    </span>
                   </div>
-
+                  
+                  <h3 className="formation-title">{formation.title}</h3>
+                  <p className="formation-instructor">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    {formation.instructor}
+                  </p>
+                  <p className="formation-description">{formation.description}</p>
+                  
                   <div className="formation-footer">
+                    <div className="formation-meta">
+                      <span className="meta-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        {formatDuration(formation.duration)}
+                      </span>
+                    </div>
                     <div className="formation-price">
                       {formation.price === 0 ? (
                         <span className="price-free">Gratuit</span>
                       ) : (
-                        <span className="price-amount">{formation.price} €</span>
+                        <span className="price-amount">{formation.price}€</span>
                       )}
                     </div>
-                    <button 
-                      className="btn-enroll"
-                      onClick={() => navigate(`/formations/${formation._id}`)}
-                    >
-                      Voir la formation
-                    </button>
                   </div>
                 </div>
               </div>

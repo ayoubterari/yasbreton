@@ -302,48 +302,6 @@
   transform: translateY(-1px);
 }
 
-/* Criteria Section */
-.criteria-section {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 2px solid #E2E8F0;
-}
-
-.criteria-section h3 {
-  color: #0F172A;
-  font-size: 1.25rem;
-  margin: 0 0 1.5rem 0;
-  font-weight: 700;
-}
-
-.criteria-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.criterion-item {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 1rem;
-  padding: 1rem;
-  background: #F8FAFC;
-  border-radius: 8px;
-  border-left: 4px solid #10B981;
-}
-
-.criterion-label {
-  color: #0F172A;
-  font-weight: 700;
-  font-size: 0.95rem;
-}
-
-.criterion-value {
-  color: #475569;
-  line-height: 1.6;
-  font-size: 0.95rem;
-}
-
 /* Sidebar */
 .task-sidebar {
   display: flex;

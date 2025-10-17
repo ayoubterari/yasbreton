@@ -3,11 +3,30 @@ import { useNavigate } from 'react-router-dom'
 import { api, Task } from '../lib/convex-client'
 import './PublicTasksPage.css'
 
+interface Domain {
+  _id: string
+  name: string
+  description?: string
+  order: number
+}
+
+interface Subdomain {
+  _id: string
+  name: string
+  description?: string
+  domainId: string
+  order: number
+}
+
 export default function PublicTasksPage() {
   const navigate = useNavigate()
   const [tasks, setTasks] = useState<Task[]>([])
+  const [domains, setDomains] = useState<Domain[]>([])
+  const [subdomains, setSubdomains] = useState<Subdomain[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedDomain, setSelectedDomain] = useState<string | null>(null)
+  const [selectedSubdomain, setSelectedSubdomain] = useState<string | null>(null)
 
   useEffect(() => {
     loadTasks()
@@ -16,19 +35,59 @@ export default function PublicTasksPage() {
   const loadTasks = async () => {
     try {
       setLoading(true)
-      const allTasks = await api.tasks.getAllTasks()
+      const [allTasks, allDomains, allSubdomains] = await Promise.all([
+        api.tasks.getAllTasks(),
+        api.domains.getAllDomains(),
+        api.domains.getAllSubdomains()
+      ])
       setTasks(allTasks)
+      setDomains(allDomains.sort((a, b) => a.order - b.order))
+      setSubdomains(allSubdomains.sort((a, b) => a.order - b.order))
     } catch (error) {
-      console.error('Erreur lors du chargement des tâches:', error)
+      console.error('Erreur lors du chargement des données:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  const filteredTasks = tasks.filter(task =>
-    task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    task.description.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Filtrer les sous-domaines selon le domaine sélectionné
+  const filteredSubdomains = selectedDomain
+    ? subdomains.filter(sub => sub.domainId === selectedDomain)
+    : []
+
+  // Filtrer les tâches
+  const filteredTasks = tasks.filter(task => {
+    const matchSearch = searchTerm === '' ||
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    // Vérifier le domaine via le subdomain
+    let matchDomain = true
+    if (selectedDomain && task.subdomainId) {
+      const taskSubdomain = subdomains.find(sub => sub._id === task.subdomainId)
+      matchDomain = taskSubdomain?.domainId === selectedDomain
+    } else if (selectedDomain) {
+      matchDomain = false
+    }
+    
+    const matchSubdomain = !selectedSubdomain || task.subdomainId === selectedSubdomain
+    
+    return matchSearch && matchDomain && matchSubdomain
+  })
+
+  // Compter les tâches par domaine
+  const getTaskCountByDomain = (domainId: string) => {
+    return tasks.filter(task => {
+      if (!task.subdomainId) return false
+      const taskSubdomain = subdomains.find(sub => sub._id === task.subdomainId)
+      return taskSubdomain?.domainId === domainId
+    }).length
+  }
+
+  // Compter les tâches par sous-domaine
+  const getTaskCountBySubdomain = (subdomainId: string) => {
+    return tasks.filter(task => task.subdomainId === subdomainId).length
+  }
 
   const getYoutubeEmbedUrl = (url: string) => {
     const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/)?.[1]
@@ -80,6 +139,116 @@ export default function PublicTasksPage() {
           </div>
         </div>
       </div>
+
+      {/* Domaines et Sous-domaines Section */}
+      {!loading && domains.length > 0 && (
+        <div className="domains-section">
+          <div className="domains-container">
+            <h2 className="domains-title">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              Domaines Principaux
+            </h2>
+            
+            <div className="domains-grid">
+              {domains.map((domain) => {
+                const taskCount = getTaskCountByDomain(domain._id)
+                const isSelected = selectedDomain === domain._id
+                const domainSubdomains = subdomains.filter(sub => sub.domainId === domain._id)
+                
+                return (
+                  <div key={domain._id} className="domain-wrapper">
+                    <div 
+                      className={`domain-card ${isSelected ? 'selected' : ''}`}
+                      onClick={() => {
+                        if (selectedDomain === domain._id) {
+                          setSelectedDomain(null)
+                          setSelectedSubdomain(null)
+                        } else {
+                          setSelectedDomain(domain._id)
+                          setSelectedSubdomain(null)
+                        }
+                      }}
+                    >
+                      <div className="domain-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                          <path d="M2 12h20"/>
+                        </svg>
+                      </div>
+                      <div className="domain-content">
+                        <h3 className="domain-name">{domain.name}</h3>
+                        {domain.description && (
+                          <p className="domain-description">{domain.description}</p>
+                        )}
+                        <div className="domain-meta">
+                          <span className="task-count">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M9 11l3 3L22 4"/>
+                              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                            </svg>
+                            {taskCount} tâche{taskCount > 1 ? 's' : ''}
+                          </span>
+                          <span className="subdomain-count">
+                            {domainSubdomains.length} sous-domaine{domainSubdomains.length > 1 ? 's' : ''}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="domain-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Sous-domaines */}
+                    {isSelected && filteredSubdomains.length > 0 && (
+                      <div className="subdomains-container">
+                        {filteredSubdomains.map((subdomain) => {
+                          const subTaskCount = getTaskCountBySubdomain(subdomain._id)
+                          const isSubSelected = selectedSubdomain === subdomain._id
+                          
+                          return (
+                            <div
+                              key={subdomain._id}
+                              className={`subdomain-card ${isSubSelected ? 'selected' : ''}`}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setSelectedSubdomain(isSubSelected ? null : subdomain._id)
+                              }}
+                            >
+                              <div className="subdomain-indicator"></div>
+                              <div className="subdomain-content">
+                                <h4 className="subdomain-name">{subdomain.name}</h4>
+                                {subdomain.description && (
+                                  <p className="subdomain-description">{subdomain.description}</p>
+                                )}
+                                <span className="subdomain-task-count">
+                                  {subTaskCount} tâche{subTaskCount > 1 ? 's' : ''}
+                                </span>
+                              </div>
+                              {isSubSelected && (
+                                <div className="subdomain-check">
+                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                  </svg>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tasks Grid */}
       <div className="tasks-grid-container">

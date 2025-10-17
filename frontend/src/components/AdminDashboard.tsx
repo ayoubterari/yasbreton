@@ -9,6 +9,8 @@ import Statistics from './Statistics'
 import TasksManagement from './TasksManagement'
 import DomainsManagement from './DomainsManagement'
 import FormationsManagement from './FormationsManagement'
+import SettingsManagement from './SettingsManagement'
+import DashboardOverview from './DashboardOverview'
 import './AdminDashboard.css'
 
 type Module = 'dashboard' | 'users' | 'settings' | 'resources-files' | 'resources-categories' | 'resources-tags' | 'resources-stats' | 'domains' | 'tasks' | 'formations'
@@ -492,30 +494,14 @@ export default function AdminDashboard() {
           {/* Module Dashboard */}
           {activeModule === 'dashboard' && (
             <div className="admin-container">
-              <div className="placeholder-content">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="7" height="7" />
-                  <rect x="14" y="3" width="7" height="7" />
-                  <rect x="14" y="14" width="7" height="7" />
-                  <rect x="3" y="14" width="7" height="7" />
-                </svg>
-                <h3>Tableau de bord</h3>
-                <p>Vue d'ensemble de l'administration</p>
-              </div>
+              <DashboardOverview />
             </div>
           )}
 
           {/* Module Paramètres */}
           {activeModule === 'settings' && (
             <div className="admin-container">
-              <div className="placeholder-content">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
-                </svg>
-                <h3>Paramètres</h3>
-                <p>Configuration de l'application</p>
-              </div>
+              <SettingsManagement />
             </div>
           )}
         </main>

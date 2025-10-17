@@ -220,25 +220,6 @@ export default function TaskDetailPage() {
                 </div>
               )}
             </div>
-
-            {/* Critères statiques */}
-            <div className="criteria-section">
-              <h3>Critères</h3>
-              <div className="criteria-list">
-                <div className="criterion-item">
-                  <span className="criterion-label">Réussite :</span>
-                  <span className="criterion-value">L'enfant répond à son prénom lorsqu'il est appelé, dans différents contextes et par différentes personnes.</span>
-                </div>
-                <div className="criterion-item">
-                  <span className="criterion-label">Généralisation :</span>
-                  <span className="criterion-value">Initier et terminer avec indice verbal.</span>
-                </div>
-                <div className="criterion-item">
-                  <span className="criterion-label">Maintien :</span>
-                  <span className="criterion-value">Répondre au prénom dans divers contextes sans aide.</span>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 

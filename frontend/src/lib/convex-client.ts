@@ -10,16 +10,27 @@ if (!CONVEX_URL) {
 export const convexClient = new ConvexHttpClient(CONVEX_URL);
 
 // Types pour nos données
+export interface UserPermissions {
+  dashboard: boolean;
+  users: boolean;
+  domains: boolean;
+  tasks: boolean;
+  formations: boolean;
+  resources: boolean;
+  settings: boolean;
+}
+
 export interface User {
   id: string;
   nom: string;
   prenom: string;
   email: string;
   telephone: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'restricted';
   isPremium?: boolean;
   premiumExpiresAt?: number;
   subscriptionType?: 'monthly' | 'quarterly' | 'yearly';
+  permissions?: UserPermissions;
   createdAt: number;
 }
 
@@ -45,6 +56,7 @@ export interface FileResource {
   tags: string[];
   type: "free" | "premium";
   fileUrl: string;
+  storageId?: string;
   fileName: string;
   fileType: string;
   fileSize: number;
@@ -129,7 +141,9 @@ export interface FormationLesson {
   formationId: string;
   title: string;
   description?: string;
-  videoUrl: string;
+  lessonType?: "video" | "resource";
+  videoUrl?: string;
+  resourceId?: string;
   duration: number;
   order: number;
   isFree?: boolean;
@@ -203,6 +217,16 @@ export const api = {
     // Créer un compte admin
     createAdmin: async (data: RegisterData): Promise<User> => {
       return await convexClient.mutation("admin:createAdmin" as any, data);
+    },
+
+    // Créer un utilisateur restreint avec permissions
+    createRestrictedUser: async (data: RegisterData & { permissions: UserPermissions; createdBy: string }): Promise<User> => {
+      return await convexClient.mutation("admin:createRestrictedUser" as any, data);
+    },
+
+    // Mettre à jour les permissions d'un utilisateur
+    updateUserPermissions: async (adminId: string, userId: string, permissions: UserPermissions): Promise<{ success: boolean }> => {
+      return await convexClient.mutation("admin:updateUserPermissions" as any, { adminId, userId, permissions });
     },
   },
 
@@ -290,6 +314,7 @@ export const api = {
       tags: string[];
       type: "free" | "premium";
       fileUrl: string;
+      storageId?: string;
       fileName: string;
       fileType: string;
       fileSize: number;
@@ -617,7 +642,9 @@ export const api = {
       formationId: string;
       title: string;
       description?: string;
-      videoUrl: string;
+      lessonType?: "video" | "resource";
+      videoUrl?: string;
+      resourceId?: string;
       duration: number;
       order: number;
       isFree?: boolean;
@@ -640,7 +667,9 @@ export const api = {
       lessonId: string;
       title?: string;
       description?: string;
+      lessonType?: "video" | "resource";
       videoUrl?: string;
+      resourceId?: string;
       duration?: number;
       order?: number;
       isFree?: boolean;
@@ -651,6 +680,48 @@ export const api = {
     // Supprimer une leçon
     deleteLesson: async (lessonId: string): Promise<{ success: boolean }> => {
       return await convexClient.mutation("formations:deleteLesson" as any, { lessonId });
+    },
+
+    // Inscrire un utilisateur à une formation
+    enrollUser: async (data: {
+      userId: string;
+      formationId: string;
+    }): Promise<{ success: boolean; enrollmentId?: string; alreadyEnrolled: boolean }> => {
+      return await convexClient.mutation("formations:enrollUser" as any, data);
+    },
+
+    // Vérifier si un utilisateur est inscrit à une formation
+    isUserEnrolled: async (data: {
+      userId: string;
+      formationId: string;
+    }): Promise<boolean> => {
+      return await convexClient.query("formations:isUserEnrolled" as any, data);
+    },
+
+    // Obtenir toutes les inscriptions d'un utilisateur
+    getUserEnrollments: async (userId: string): Promise<any[]> => {
+      return await convexClient.query("formations:getUserEnrollments" as any, { userId });
+    },
+
+    // Obtenir les statistiques d'inscription d'une formation
+    getFormationEnrollmentStats: async (formationId: string): Promise<{
+      totalEnrollments: number;
+      freeEnrollments: number;
+      paidEnrollments: number;
+      enrollments: Array<{
+        enrollmentId: string;
+        enrolledAt: number;
+        paymentStatus?: "free" | "paid";
+        user: {
+          id: string;
+          nom: string;
+          prenom: string;
+          email: string;
+          isPremium?: boolean;
+        } | null;
+      }>;
+    }> => {
+      return await convexClient.query("formations:getFormationEnrollmentStats" as any, { formationId });
     },
   },
 };

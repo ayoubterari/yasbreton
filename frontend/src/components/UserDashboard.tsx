@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { api } from '../lib/convex-client'
 import PremiumSection from './PremiumSection'
@@ -8,7 +8,16 @@ import './UserDashboard.css'
 export default function UserDashboard() {
   const { user, login, logout } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'premium'>('profile')
+
+  // Gérer le paramètre tab dans l'URL
+  useEffect(() => {
+    const tabParam = searchParams.get('tab')
+    if (tabParam === 'premium' || tabParam === 'profile' || tabParam === 'password') {
+      setActiveTab(tabParam)
+    }
+  }, [searchParams])
   
   // Profile form
   const [profileData, setProfileData] = useState({

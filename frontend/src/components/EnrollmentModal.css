@@ -1,0 +1,333 @@
+.enrollment-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.enrollment-modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.enrollment-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.enrollment-modal-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+.enrollment-modal-close svg {
+  color: #666;
+}
+
+.enrollment-modal-body {
+  padding: 48px 32px 32px;
+  text-align: center;
+}
+
+.enrollment-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enrollment-icon svg {
+  color: white;
+}
+
+.enrollment-modal-body h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.enrollment-modal-body .formation-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #667eea;
+  margin: 0 0 32px;
+}
+
+.enrollment-info {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  color: #4a5568;
+  font-size: 15px;
+}
+
+.info-item svg {
+  flex-shrink: 0;
+  color: #667eea;
+}
+
+.enrollment-price-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  color: white;
+}
+
+.price-tag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.price-amount {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.price-label {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.price-description {
+  font-size: 14px;
+  opacity: 0.95;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.enrollment-free-section {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  color: white;
+}
+
+.free-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.free-badge svg {
+  width: 28px;
+  height: 28px;
+}
+
+.free-description {
+  font-size: 14px;
+  opacity: 0.95;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.login-notice {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.login-notice svg {
+  flex-shrink: 0;
+}
+
+.enrollment-error {
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.enrollment-error svg {
+  flex-shrink: 0;
+}
+
+.enrollment-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-enroll-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-enroll-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-enroll-primary:active {
+  transform: translateY(0);
+}
+
+.btn-enroll-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-enroll-primary .spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-enroll-secondary {
+  background: transparent;
+  color: #666;
+  border: 2px solid #e2e8f0;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-enroll-secondary:hover {
+  background: #f8f9fa;
+  border-color: #cbd5e0;
+}
+
+.btn-enroll-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .enrollment-modal-content {
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+    margin-top: auto;
+  }
+
+  .enrollment-modal-body {
+    padding: 40px 24px 24px;
+  }
+
+  .enrollment-modal-body h2 {
+    font-size: 24px;
+  }
+
+  .enrollment-modal-body .formation-title {
+    font-size: 16px;
+  }
+
+  .price-amount {
+    font-size: 40px;
+  }
+
+  .enrollment-info {
+    padding: 20px;
+  }
+
+  .info-item {
+    font-size: 14px;
+  }
+}

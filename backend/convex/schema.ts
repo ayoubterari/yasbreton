@@ -8,12 +8,23 @@ export default defineSchema({
     email: v.string(),
     password: v.string(), // En production, utilisez un hash (bcrypt)
     telephone: v.string(),
-    role: v.union(v.literal("user"), v.literal("admin")), // user ou admin
+    role: v.union(v.literal("user"), v.literal("admin"), v.literal("restricted")), // user, admin ou restricted
     isPremium: v.optional(v.boolean()), // Statut premium
     premiumExpiresAt: v.optional(v.number()), // Date d'expiration de l'abonnement
     subscriptionType: v.optional(v.union(v.literal("monthly"), v.literal("quarterly"), v.literal("yearly"))),
+    permissions: v.optional(v.object({
+      dashboard: v.boolean(),
+      users: v.boolean(),
+      domains: v.boolean(),
+      tasks: v.boolean(),
+      formations: v.boolean(),
+      resources: v.boolean(),
+      settings: v.boolean(),
+    })),
+    createdBy: v.optional(v.id("users")), // ID de l'admin qui a créé l'utilisateur restreint
     createdAt: v.number(),
-  }).index("by_email", ["email"]),
+  }).index("by_email", ["email"])
+    .index("by_role", ["role"]),
 
   // Catégories de fichiers
   categories: defineTable({
@@ -44,7 +55,8 @@ export default defineSchema({
     categories: v.array(v.id("categories")), // IDs des catégories
     tags: v.array(v.string()), // Noms des tags
     type: v.union(v.literal("free"), v.literal("premium")),
-    fileUrl: v.string(), // URL du fichier uploadé
+    fileUrl: v.string(), // URL du fichier uploadé (pour compatibilité)
+    storageId: v.optional(v.id("_storage")), // ID Convex Storage
     fileName: v.string(),
     fileType: v.string(), // MIME type
     fileSize: v.number(), // en bytes
@@ -135,13 +147,15 @@ export default defineSchema({
     .index("by_formation", ["formationId"])
     .index("by_order", ["order"]),
 
-  // Leçons (vidéos)
+  // Leçons (vidéos ou ressources)
   formationLessons: defineTable({
     sectionId: v.id("formationSections"),
     formationId: v.id("formations"),
     title: v.string(),
     description: v.optional(v.string()),
-    videoUrl: v.string(),
+    lessonType: v.optional(v.union(v.literal("video"), v.literal("resource"))), // Type de leçon
+    videoUrl: v.optional(v.string()), // URL vidéo (si type = video)
+    resourceId: v.optional(v.id("files")), // ID de la ressource (si type = resource)
     duration: v.number(), // Durée en minutes
     order: v.number(),
     isFree: v.optional(v.boolean()), // Leçon gratuite accessible sans abonnement
@@ -150,7 +164,19 @@ export default defineSchema({
   })
     .index("by_section", ["sectionId"])
     .index("by_formation", ["formationId"])
-    .index("by_order", ["order"]),
+    .index("by_order", ["order"])
+    .index("by_resource", ["resourceId"]),
+
+  // Inscriptions aux formations
+  formationEnrollments: defineTable({
+    userId: v.id("users"),
+    formationId: v.id("formations"),
+    enrolledAt: v.number(),
+    paymentStatus: v.optional(v.union(v.literal("paid"), v.literal("free"))), // Statut du paiement
+  })
+    .index("by_user", ["userId"])
+    .index("by_formation", ["formationId"])
+    .index("by_user_formation", ["userId", "formationId"]),
 
   // Progression des utilisateurs
   formationProgress: defineTable({

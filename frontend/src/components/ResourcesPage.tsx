@@ -202,39 +202,48 @@ export default function ResourcesPage({ onOpenLogin }: ResourcesPageProps) {
             {mainCategories.length > 0 && (
               <div className="filter-group">
                 <label>Catégorie :</label>
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => {
-                    setSelectedCategory(e.target.value)
-                    setSelectedSubcategory('all') // Reset subcategory when category changes
+                <button
+                  className={`pill ${selectedCategory === 'all' ? 'active' : ''}`}
+                  onClick={() => {
+                    setSelectedCategory('all')
+                    setSelectedSubcategory('all')
                   }}
-                  className="filter-select"
                 >
-                  <option value="all">Toutes les catégories</option>
-                  {mainCategories.map(category => (
-                    <option key={category._id} value={category._id}>
-                      {category.nameFr}
-                    </option>
-                  ))}
-                </select>
+                  Toutes
+                </button>
+                {mainCategories.map(category => (
+                  <button
+                    key={category._id}
+                    className={`pill ${selectedCategory === category._id ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedCategory(category._id)
+                      setSelectedSubcategory('all')
+                    }}
+                  >
+                    {category.nameFr}
+                  </button>
+                ))}
               </div>
             )}
 
-            {filteredSubcategories.length > 0 && (
+            {selectedCategory !== 'all' && filteredSubcategories.length > 0 && (
               <div className="filter-group">
                 <label>Sous-catégorie :</label>
-                <select
-                  value={selectedSubcategory}
-                  onChange={(e) => setSelectedSubcategory(e.target.value)}
-                  className="filter-select"
+                <button
+                  className={`pill ${selectedSubcategory === 'all' ? 'active' : ''}`}
+                  onClick={() => setSelectedSubcategory('all')}
                 >
-                  <option value="all">Toutes les sous-catégories</option>
-                  {filteredSubcategories.map(subcategory => (
-                    <option key={subcategory._id} value={subcategory._id}>
-                      {subcategory.nameFr}
-                    </option>
-                  ))}
-                </select>
+                  Toutes
+                </button>
+                {filteredSubcategories.map(subcategory => (
+                  <button
+                    key={subcategory._id}
+                    className={`pill ${selectedSubcategory === subcategory._id ? 'active' : ''}`}
+                    onClick={() => setSelectedSubcategory(subcategory._id)}
+                  >
+                    {subcategory.nameFr}
+                  </button>
+                ))}
               </div>
             )}
           </div>
@@ -311,16 +320,62 @@ export default function ResourcesPage({ onOpenLogin }: ResourcesPageProps) {
                   </div>
 
                   <div className="resource-card-footer">
-                    <button
-                      onClick={() => setViewingFile(file)}
-                      className="btn-read"
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                      Lire
-                    </button>
+                    {/* Bouton Lire - conditionnel selon le type de fichier et le statut premium */}
+                    {isAuthenticated ? (
+                      // Utilisateur connecté
+                      file.type === 'free' || user?.isPremium ? (
+                        // Fichier gratuit OU utilisateur premium : peut lire
+                        <button
+                          onClick={() => setViewingFile(file)}
+                          className="btn-read"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                          Lire
+                        </button>
+                      ) : (
+                        // Fichier premium mais utilisateur non premium : bouton désactivé
+                        <button
+                          className="btn-read btn-premium-locked"
+                          disabled
+                          title="Contenu premium - Abonnement requis"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0110 0v4" />
+                          </svg>
+                          Lire
+                        </button>
+                      )
+                    ) : (
+                      // Visiteur non connecté : peut lire les fichiers gratuits
+                      file.type === 'free' ? (
+                        <button
+                          onClick={() => setViewingFile(file)}
+                          className="btn-read"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                          Lire
+                        </button>
+                      ) : (
+                        // Fichier premium : doit se connecter
+                        <button
+                          onClick={onOpenLogin}
+                          className="btn-read btn-login-required"
+                          title="Connectez-vous pour accéder au contenu premium"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
+                          </svg>
+                          Se connecter
+                        </button>
+                      )
+                    )}
                     
                     {/* Téléchargement conditionnel */}
                     {isAuthenticated ? (
@@ -337,8 +392,9 @@ export default function ResourcesPage({ onOpenLogin }: ResourcesPageProps) {
                           Télécharger
                         </button>
                       ) : (
-                        // Fichier premium mais utilisateur non premium
+                        // Fichier premium mais utilisateur non premium : redirection vers premium
                         <button
+                          onClick={() => navigate('/dashboard?tab=premium')}
                           className="btn-download btn-premium-locked"
                           title="Contenu premium - Abonnement requis"
                         >
