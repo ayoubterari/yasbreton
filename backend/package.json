@@ -1,0 +1,16 @@
+{
+  "name": "centre-yasbreton-backend",
+  "version": "1.0.0",
+  "description": "Backend Convex pour Centre Yasbreton",
+  "scripts": {
+    "dev": "convex dev",
+    "deploy": "convex deploy"
+  },
+  "dependencies": {
+    "convex": "^1.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}

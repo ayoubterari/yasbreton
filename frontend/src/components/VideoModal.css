@@ -1,0 +1,141 @@
+.video-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 2rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.video-modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 1200px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.video-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #E2E8F0;
+}
+
+.video-modal-header h3 {
+  color: #0F172A;
+  font-size: 1.25rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.video-modal-close {
+  background: transparent;
+  border: none;
+  color: #64748B;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-modal-close:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+}
+
+.video-modal-body {
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.video-modal-iframe-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.video-modal-iframe-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-modal-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: #64748B;
+}
+
+.video-modal-error svg {
+  color: #94A3B8;
+}
+
+.video-modal-error p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .video-modal-overlay {
+    padding: 1rem;
+  }
+
+  .video-modal-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .video-modal-header h3 {
+    font-size: 1rem;
+  }
+
+  .video-modal-body {
+    padding: 1rem;
+  }
+}
