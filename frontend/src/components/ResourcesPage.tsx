@@ -41,57 +41,6 @@ export default function ResourcesPage({ onOpenLogin }: ResourcesPageProps) {
     }
   }
 
-  const handleDownloadFile = async (file: FileResource) => {
-    try {
-      // Vérifier si l'URL est valide
-      if (!file.fileUrl || file.fileUrl === '') {
-        alert('URL du fichier non disponible')
-        return
-      }
-
-      // Enregistrer le téléchargement si l'utilisateur est connecté
-      if (user) {
-        try {
-          await api.statistics.trackDownload(file._id, user.id)
-        } catch (err) {
-          console.error('Erreur lors de l\'enregistrement du téléchargement:', err)
-          // Continue quand même le téléchargement
-        }
-      }
-
-      // Télécharger le fichier via fetch pour gérer les erreurs
-      const response = await fetch(file.fileUrl, {
-        method: 'GET',
-        mode: 'cors',
-      })
-
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`)
-      }
-
-      // Convertir en blob
-      const blob = await response.blob()
-      
-      // Créer une URL locale
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = file.fileName || `${file.titleFr}.pdf`
-      
-      // Télécharger
-      document.body.appendChild(link)
-      link.click()
-      
-      // Nettoyer
-      setTimeout(() => {
-        document.body.removeChild(link)
-        window.URL.revokeObjectURL(url)
-      }, 100)
-    } catch (error) {
-      console.error('Erreur lors du téléchargement:', error)
-      alert(`Impossible de télécharger le fichier. Le fichier n'existe peut-être plus sur le serveur.\n\nErreur: ${error}`)
-    }
-  }
 
   // Obtenir les sous-catégories (catégories avec parentId)
   const subcategories = categories.filter(cat => cat.parentId)
@@ -375,48 +324,6 @@ export default function ResourcesPage({ onOpenLogin }: ResourcesPageProps) {
                           Se connecter
                         </button>
                       )
-                    )}
-                    
-                    {/* Téléchargement conditionnel */}
-                    {isAuthenticated ? (
-                      // Utilisateur connecté
-                      file.type === 'free' || user?.isPremium ? (
-                        // Fichier gratuit OU utilisateur premium : peut télécharger
-                        <button
-                          onClick={() => handleDownloadFile(file)}
-                          className="btn-download"
-                        >
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                          </svg>
-                          Télécharger
-                        </button>
-                      ) : (
-                        // Fichier premium mais utilisateur non premium : redirection vers premium
-                        <button
-                          onClick={() => navigate('/dashboard?tab=premium')}
-                          className="btn-download btn-premium-locked"
-                          title="Contenu premium - Abonnement requis"
-                        >
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                            <path d="M7 11V7a5 5 0 0110 0v4" />
-                          </svg>
-                          Premium
-                        </button>
-                      )
-                    ) : (
-                      // Visiteur non connecté : doit se connecter pour télécharger
-                      <button
-                        onClick={onOpenLogin}
-                        className="btn-download btn-login-required"
-                        title="Connectez-vous pour télécharger"
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
-                        </svg>
-                        Se connecter
-                      </button>
                     )}
                   </div>
                 </div>

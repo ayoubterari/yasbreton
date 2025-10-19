@@ -39,7 +39,7 @@ export default function FileViewer({ fileUrl, fileName, fileType, onClose }: Fil
     if (fileType === 'application/pdf') {
       return (
         <iframe
-          src={fileUrl}
+          src={`${fileUrl}#toolbar=0&navpanes=0&scrollbar=1`}
           title={fileName}
           onLoad={handleLoad}
           className="viewer-iframe"
@@ -130,12 +130,6 @@ export default function FileViewer({ fileUrl, fileName, fileType, onClose }: Fil
         <h3>Prévisualisation non disponible</h3>
         <p>Ce type de fichier ne peut pas être prévisualisé dans le navigateur.</p>
         <p className="file-type-info">Type : {fileType}</p>
-        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="btn-download-alt">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-          </svg>
-          Télécharger le fichier
-        </a>
       </div>
     )
   }
@@ -153,29 +147,6 @@ export default function FileViewer({ fileUrl, fileName, fileType, onClose }: Fil
             <span>{fileName}</span>
           </div>
           <div className="viewer-actions">
-            <a
-              href={fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-viewer-action"
-              title="Ouvrir dans un nouvel onglet"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
-            </a>
-            <a
-              href={fileUrl}
-              download={fileName}
-              className="btn-viewer-action"
-              title="Télécharger"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-              </svg>
-            </a>
             <button onClick={onClose} className="btn-viewer-close" title="Fermer">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="18" y1="6" x2="6" y2="18" />

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { api, Domain, Subdomain } from '../lib/convex-client'
+import ImportDomainsButton from './ImportDomainsButton'
+import ImportABLLSTasksButton from './ImportABLLSTasksButton'
 import './DomainsManagement.css'
 
 export default function DomainsManagement() {
@@ -8,9 +10,13 @@ export default function DomainsManagement() {
   const [loading, setLoading] = useState(true)
   const [showDomainForm, setShowDomainForm] = useState(false)
   const [showSubdomainForm, setShowSubdomainForm] = useState(false)
+  const [showGenerateTasksForm, setShowGenerateTasksForm] = useState(false)
   const [editingDomain, setEditingDomain] = useState<Domain | null>(null)
   const [editingSubdomain, setEditingSubdomain] = useState<Subdomain | null>(null)
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null)
+  const [showSubdomainsModal, setShowSubdomainsModal] = useState(false)
+  const [selectedDomainForModal, setSelectedDomainForModal] = useState<Domain | null>(null)
+  const [selectedSubdomainForTasks, setSelectedSubdomainForTasks] = useState<Subdomain | null>(null)
   
   const [domainFormData, setDomainFormData] = useState({
     name: '',
@@ -21,6 +27,12 @@ export default function DomainsManagement() {
     name: '',
     description: '',
     domainId: ''
+  })
+
+  const [generateTasksFormData, setGenerateTasksFormData] = useState({
+    count: 10,
+    prefix: '',
+    criteriaCount: 0
   })
 
   useEffect(() => {
@@ -179,6 +191,72 @@ export default function DomainsManagement() {
     return subdomains.filter(s => s.domainId === domainId)
   }
 
+  // ========== GÉNÉRATION DE TÂCHES ==========
+
+  const handleGenerateTasksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setGenerateTasksFormData({
+      ...generateTasksFormData,
+      [name]: (name === 'count' || name === 'criteriaCount') ? parseInt(value) || 0 : value
+    })
+  }
+
+  const handleOpenGenerateTasks = (subdomain: Subdomain) => {
+    setSelectedSubdomainForTasks(subdomain)
+    setGenerateTasksFormData({
+      count: 10,
+      prefix: subdomain.name,
+      criteriaCount: 0
+    })
+    setShowGenerateTasksForm(true)
+  }
+
+  const handleGenerateTasksSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!selectedSubdomainForTasks) return
+    
+    if (generateTasksFormData.count <= 0 || generateTasksFormData.count > 100) {
+      alert('Le nombre de tâches doit être entre 1 et 100')
+      return
+    }
+    
+    if (!generateTasksFormData.prefix.trim()) {
+      alert('Le préfixe ne peut pas être vide')
+      return
+    }
+
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}')
+      if (!user.id) {
+        alert('Vous devez être connecté pour générer des tâches')
+        return
+      }
+
+      const result = await api.tasks.generateEmptyTasks({
+        subdomainId: selectedSubdomainForTasks._id,
+        count: generateTasksFormData.count,
+        prefix: generateTasksFormData.prefix,
+        criteriaCount: generateTasksFormData.criteriaCount,
+        userId: user.id
+      })
+      
+      alert(`${result.count} tâche(s) créée(s) avec succès !`)
+      setShowGenerateTasksForm(false)
+      setSelectedSubdomainForTasks(null)
+      setGenerateTasksFormData({ count: 10, prefix: '', criteriaCount: 0 })
+    } catch (error) {
+      console.error('Erreur lors de la génération des tâches:', error)
+      alert('Erreur lors de la génération des tâches')
+    }
+  }
+
+  const handleCancelGenerateTasks = () => {
+    setShowGenerateTasksForm(false)
+    setSelectedSubdomainForTasks(null)
+    setGenerateTasksFormData({ count: 10, prefix: '', criteriaCount: 0 })
+  }
+
   if (loading) {
     return (
       <div className="domains-management">
@@ -195,6 +273,8 @@ export default function DomainsManagement() {
       <div className="page-header">
         <h1>Gestion des Domaines</h1>
         <div className="header-actions">
+          <ImportDomainsButton />
+          <ImportABLLSTasksButton />
           <button className="btn-primary" onClick={() => setShowDomainForm(true)}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="12" y1="5" x2="12" y2="19"/>
@@ -250,6 +330,83 @@ export default function DomainsManagement() {
                 </button>
                 <button type="submit" className="btn-submit">
                   {editingDomain ? 'Mettre à jour' : 'Créer'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Formulaire Génération de Tâches */}
+      {showGenerateTasksForm && (
+        <div className="modal-overlay" onClick={handleCancelGenerateTasks}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Générer des tâches vides</h2>
+              <button className="btn-close" onClick={handleCancelGenerateTasks}>×</button>
+            </div>
+            <form onSubmit={handleGenerateTasksSubmit}>
+              <div className="form-group">
+                <label>Sous-domaine sélectionné</label>
+                <input
+                  type="text"
+                  value={selectedSubdomainForTasks?.name || ''}
+                  disabled
+                  style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="taskPrefix">Préfixe des tâches *</label>
+                <input
+                  type="text"
+                  id="taskPrefix"
+                  name="prefix"
+                  value={generateTasksFormData.prefix}
+                  onChange={handleGenerateTasksChange}
+                  placeholder="Ex: Tâche"
+                  required
+                />
+                <small style={{ color: '#666', fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>
+                  Les tâches seront nommées : {generateTasksFormData.prefix || 'Préfixe'}1, {generateTasksFormData.prefix || 'Préfixe'}2, etc.
+                </small>
+              </div>
+              <div className="form-group">
+                <label htmlFor="taskCount">Nombre de tâches *</label>
+                <input
+                  type="number"
+                  id="taskCount"
+                  name="count"
+                  value={generateTasksFormData.count}
+                  onChange={handleGenerateTasksChange}
+                  min="1"
+                  max="100"
+                  required
+                />
+                <small style={{ color: '#666', fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>
+                  Maximum : 100 tâches
+                </small>
+              </div>
+              <div className="form-group">
+                <label htmlFor="criteriaCount">Nombre de critères par tâche</label>
+                <input
+                  type="number"
+                  id="criteriaCount"
+                  name="criteriaCount"
+                  value={generateTasksFormData.criteriaCount}
+                  onChange={handleGenerateTasksChange}
+                  min="0"
+                  max="20"
+                />
+                <small style={{ color: '#666', fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>
+                  Chaque tâche aura {generateTasksFormData.criteriaCount} critère{generateTasksFormData.criteriaCount > 1 ? 's' : ''} vide{generateTasksFormData.criteriaCount > 1 ? 's' : ''} (Maximum : 20)
+                </small>
+              </div>
+              <div className="form-actions">
+                <button type="button" className="btn-cancel" onClick={handleCancelGenerateTasks}>
+                  Annuler
+                </button>
+                <button type="submit" className="btn-submit">
+                  Générer {generateTasksFormData.count} tâche(s)
                 </button>
               </div>
             </form>
@@ -328,86 +485,140 @@ export default function DomainsManagement() {
             <p>Commencez par créer votre premier domaine</p>
           </div>
         ) : (
-          domains.map(domain => {
-            const domainSubdomains = getSubdomainsByDomain(domain._id)
-            const isExpanded = selectedDomainId === domain._id
+          <div className="domains-grid">
+            {domains.map(domain => {
+              const domainSubdomains = getSubdomainsByDomain(domain._id)
 
-            return (
-              <div key={domain._id} className="domain-card">
-                <div className="domain-header">
-                  <div className="domain-info" onClick={() => setSelectedDomainId(isExpanded ? null : domain._id)}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
-                    </svg>
-                    <div>
-                      <h3>{domain.name}</h3>
-                      {domain.description && <p>{domain.description}</p>}
-                      <span className="subdomain-count">{domainSubdomains.length} sous-domaine(s)</span>
+              return (
+                <div 
+                  key={domain._id} 
+                  className="domain-card-simple"
+                  onClick={() => {
+                    setSelectedDomainForModal(domain)
+                    setShowSubdomainsModal(true)
+                  }}
+                >
+                  <div className="domain-number">{domain.order}</div>
+                  
+                  <div className="domain-card-content">
+                    <div className="domain-info-main">
+                      <h3 className="domain-title">{domain.name}</h3>
+                      {domain.description && (
+                        <p className="domain-description">{domain.description}</p>
+                      )}
                     </div>
-                    <svg 
-                      className={`chevron ${isExpanded ? 'expanded' : ''}`}
-                      width="20" 
-                      height="20" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2"
-                    >
-                      <polyline points="6 9 12 15 18 9"/>
-                    </svg>
-                  </div>
-                  <div className="domain-actions">
-                    <button className="btn-icon" onClick={() => handleEditDomain(domain)}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    
+                    <span className="subdomain-badge">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
                       </svg>
-                    </button>
-                    <button className="btn-icon btn-delete" onClick={() => handleDeleteDomain(domain._id)}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polyline points="3 6 5 6 21 6"/>
-                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
-                      </svg>
-                    </button>
+                      {domainSubdomains.length}
+                    </span>
+                    
+                    <div className="domain-card-actions" onClick={(e) => e.stopPropagation()}>
+                      <button className="btn-icon-small" onClick={() => handleEditDomain(domain)} title="Modifier">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                      </button>
+                      <button className="btn-icon-small btn-delete" onClick={() => handleDeleteDomain(domain._id)} title="Supprimer">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="3 6 5 6 21 6"/>
+                          <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
-
-                {isExpanded && domainSubdomains.length > 0 && (
-                  <div className="subdomains-list">
-                    {domainSubdomains.map(subdomain => (
-                      <div key={subdomain._id} className="subdomain-item">
-                        <div className="subdomain-info">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="9 18 15 12 9 6"/>
-                          </svg>
-                          <div>
-                            <h4>{subdomain.name}</h4>
-                            {subdomain.description && <p>{subdomain.description}</p>}
-                          </div>
-                        </div>
-                        <div className="subdomain-actions">
-                          <button className="btn-icon" onClick={() => handleEditSubdomain(subdomain)}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                            </svg>
-                          </button>
-                          <button className="btn-icon btn-delete" onClick={() => handleDeleteSubdomain(subdomain._id)}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <line x1="18" y1="6" x2="6" y2="18"/>
-                              <line x1="6" y1="6" x2="18" y2="18"/>
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )
-          })
+              )
+            })}
+          </div>
         )}
       </div>
+
+      {/* Modal des sous-domaines */}
+      {showSubdomainsModal && selectedDomainForModal && (
+        <div className="modal-overlay" onClick={() => setShowSubdomainsModal(false)}>
+          <div className="modal-content modal-subdomains" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-header-content">
+                <div className="domain-number-large">{selectedDomainForModal.order}</div>
+                <div>
+                  <h2>{selectedDomainForModal.name}</h2>
+                  {selectedDomainForModal.description && (
+                    <p className="modal-domain-description">{selectedDomainForModal.description}</p>
+                  )}
+                </div>
+              </div>
+              <button className="btn-close" onClick={() => setShowSubdomainsModal(false)}>×</button>
+            </div>
+
+            <div className="modal-body">
+              <div className="modal-subdomains-header">
+                <h3>Sous-domaines ({getSubdomainsByDomain(selectedDomainForModal._id).length})</h3>
+              </div>
+
+              <div className="modal-subdomains-grid">
+                {getSubdomainsByDomain(selectedDomainForModal._id).map(subdomain => (
+                  <div key={subdomain._id} className="modal-subdomain-card">
+                    <div className="modal-subdomain-header">
+                      <div className="subdomain-number-badge">{subdomain.order}</div>
+                      <h4>{subdomain.name}</h4>
+                    </div>
+                    {subdomain.description && (
+                      <p className="modal-subdomain-description">{subdomain.description}</p>
+                    )}
+                    <div className="modal-subdomain-actions">
+                      <button 
+                        className="btn-action-modal btn-generate"
+                        onClick={() => {
+                          handleOpenGenerateTasks(subdomain)
+                          setShowSubdomainsModal(false)
+                        }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                          <polyline points="14 2 14 8 20 8"/>
+                          <line x1="12" y1="18" x2="12" y2="12"/>
+                          <line x1="9" y1="15" x2="15" y2="15"/>
+                        </svg>
+                        Générer tâches
+                      </button>
+                      <button 
+                        className="btn-action-modal btn-edit-modal"
+                        onClick={() => {
+                          handleEditSubdomain(subdomain)
+                          setShowSubdomainsModal(false)
+                        }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        Modifier
+                      </button>
+                      <button 
+                        className="btn-action-modal btn-delete-modal"
+                        onClick={() => {
+                          handleDeleteSubdomain(subdomain._id)
+                          setShowSubdomainsModal(false)
+                        }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="18" y1="6" x2="6" y2="18"/>
+                          <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

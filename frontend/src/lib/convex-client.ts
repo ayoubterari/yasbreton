@@ -88,6 +88,10 @@ export interface Subdomain {
 export interface TaskCriterion {
   title: string;
   videoUrl: string;
+  description?: string;
+  baseline?: string;
+  technicalDetails?: string;
+  resourceIds?: string[];
 }
 
 export interface Task {
@@ -212,6 +216,11 @@ export const api = {
     // Changer le rôle d'un utilisateur
     changeUserRole: async (adminId: string, userId: string, newRole: "user" | "admin"): Promise<{ success: boolean }> => {
       return await convexClient.mutation("admin:changeUserRole" as any, { adminId, userId, newRole });
+    },
+
+    // Mettre à jour un utilisateur
+    updateUser: async (adminId: string, userId: string, data: { nom: string; prenom: string; email: string; telephone: string }): Promise<{ success: boolean }> => {
+      return await convexClient.mutation("admin:updateUser" as any, { adminId, userId, ...data });
     },
     
     // Créer un compte admin
@@ -556,6 +565,17 @@ export const api = {
       deleted: number;
     }> => {
       return await convexClient.query("tasks:getTasksStats" as any);
+    },
+
+    // Générer automatiquement plusieurs tâches vides
+    generateEmptyTasks: async (data: {
+      subdomainId: string;
+      count: number;
+      prefix: string;
+      criteriaCount: number;
+      userId: string;
+    }): Promise<{ success: boolean; count: number; taskIds: string[] }> => {
+      return await convexClient.mutation("tasks:generateEmptyTasks" as any, data);
     },
   },
 

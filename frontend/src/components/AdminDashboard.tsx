@@ -25,6 +25,14 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editFormData, setEditFormData] = useState({
+    nom: '',
+    prenom: '',
+    email: '',
+    telephone: ''
+  })
 
   useEffect(() => {
     loadUsers()
@@ -96,6 +104,47 @@ export default function AdminDashboard() {
       setError(err.message || 'Erreur lors du changement de rôle')
       setTimeout(() => setError(''), 3000)
     }
+  }
+
+  const handleEditUser = (userToEdit: User) => {
+    setEditingUser(userToEdit)
+    setEditFormData({
+      nom: userToEdit.nom,
+      prenom: userToEdit.prenom,
+      email: userToEdit.email,
+      telephone: userToEdit.telephone || ''
+    })
+    setShowEditModal(true)
+  }
+
+  const handleEditFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditFormData({
+      ...editFormData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleUpdateUser = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingUser) return
+
+    try {
+      await api.admin.updateUser(user!.id, editingUser.id, editFormData)
+      setSuccess('Utilisateur modifié avec succès')
+      setTimeout(() => setSuccess(''), 3000)
+      setShowEditModal(false)
+      setEditingUser(null)
+      await loadUsers()
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors de la modification')
+      setTimeout(() => setError(''), 3000)
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setShowEditModal(false)
+    setEditingUser(null)
+    setEditFormData({ nom: '', prenom: '', email: '', telephone: '' })
   }
 
   return (
@@ -370,6 +419,23 @@ export default function AdminDashboard() {
                               <option value="admin">Admin</option>
                             </select>
                             <button
+                              onClick={() => handleEditUser(u)}
+                              className="btn-edit"
+                              title="Modifier"
+                            >
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                              >
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                              </svg>
+                            </button>
+                            <button
                               onClick={() => handleDeleteUser(u.id)}
                               className="btn-delete"
                               title="Supprimer"
@@ -506,6 +572,77 @@ export default function AdminDashboard() {
           )}
         </main>
       </div>
+
+      {/* Modal d'édition d'utilisateur */}
+      {showEditModal && editingUser && (
+        <div className="modal-overlay" onClick={handleCancelEdit}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Modifier l'utilisateur</h2>
+              <button className="btn-close-modal" onClick={handleCancelEdit}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            <form onSubmit={handleUpdateUser} className="modal-form">
+              <div className="form-group">
+                <label htmlFor="edit-nom">Nom *</label>
+                <input
+                  type="text"
+                  id="edit-nom"
+                  name="nom"
+                  value={editFormData.nom}
+                  onChange={handleEditFormChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="edit-prenom">Prénom *</label>
+                <input
+                  type="text"
+                  id="edit-prenom"
+                  name="prenom"
+                  value={editFormData.prenom}
+                  onChange={handleEditFormChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="edit-email">Email *</label>
+                <input
+                  type="email"
+                  id="edit-email"
+                  name="email"
+                  value={editFormData.email}
+                  onChange={handleEditFormChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="edit-telephone">Téléphone</label>
+                <input
+                  type="tel"
+                  id="edit-telephone"
+                  name="telephone"
+                  value={editFormData.telephone}
+                  onChange={handleEditFormChange}
+                  placeholder="Ex: 0612345678"
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="btn-cancel" onClick={handleCancelEdit}>
+                  Annuler
+                </button>
+                <button type="submit" className="btn-submit">
+                  Enregistrer
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

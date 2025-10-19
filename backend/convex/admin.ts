@@ -89,6 +89,45 @@ export const changeUserRole = mutation({
   },
 });
 
+// Mettre à jour les informations d'un utilisateur (admin uniquement)
+export const updateUser = mutation({
+  args: {
+    adminId: v.id("users"),
+    userId: v.id("users"),
+    nom: v.string(),
+    prenom: v.string(),
+    email: v.string(),
+    telephone: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // Vérifier que l'utilisateur est admin
+    const admin = await ctx.db.get(args.adminId);
+    if (!admin || admin.role !== "admin") {
+      throw new Error("Accès non autorisé");
+    }
+
+    // Vérifier si l'email est déjà utilisé par un autre utilisateur
+    const existingUser = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), args.email))
+      .first();
+
+    if (existingUser && existingUser._id !== args.userId) {
+      throw new Error("Cet email est déjà utilisé");
+    }
+
+    // Mettre à jour l'utilisateur
+    await ctx.db.patch(args.userId, {
+      nom: args.nom,
+      prenom: args.prenom,
+      email: args.email,
+      telephone: args.telephone,
+    });
+
+    return { success: true };
+  },
+});
+
 // Créer un compte admin (pour initialisation)
 export const createAdmin = mutation({
   args: {

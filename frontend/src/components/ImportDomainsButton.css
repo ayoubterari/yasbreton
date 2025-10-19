@@ -1,0 +1,247 @@
+.import-domains-container {
+  margin: 1rem 0;
+}
+
+.btn-import-domains {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-import-domains:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-import-domains:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-import-domains svg {
+  flex-shrink: 0;
+}
+
+.modal-content-import {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header-import {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #E0F2FE;
+  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+}
+
+.modal-header-import h2 {
+  color: #0F172A;
+  font-size: 1.5rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.modal-body-import {
+  padding: 2rem;
+}
+
+.import-summary {
+  margin-bottom: 1.5rem;
+}
+
+.import-summary h3 {
+  color: #0F172A;
+  font-size: 1.125rem;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+  border: 2px solid #BBF7D0;
+  border-radius: 12px;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #059669;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #047857;
+  font-weight: 600;
+}
+
+.domains-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 1rem;
+  background: #F9FAFB;
+  border-radius: 8px;
+}
+
+.domain-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+}
+
+.domain-item svg {
+  color: #10B981;
+  flex-shrink: 0;
+}
+
+.domain-name {
+  flex: 1;
+  font-weight: 600;
+  color: #1F2937;
+  font-size: 0.9375rem;
+}
+
+.subdomain-count {
+  font-size: 0.8125rem;
+  color: #6B7280;
+  padding: 0.25rem 0.625rem;
+  background: #F3F4F6;
+  border-radius: 12px;
+}
+
+.warning-box {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #FEF3C7;
+  border: 2px solid #FCD34D;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+}
+
+.warning-box svg {
+  color: #D97706;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.warning-box p {
+  color: #92400E;
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.modal-actions-import {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 2px solid #E0F2FE;
+  background: #F9FAFB;
+}
+
+.btn-confirm-import {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-confirm-import:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.import-result {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #F0FDF4;
+  border: 2px solid #BBF7D0;
+  border-radius: 8px;
+}
+
+.import-result h4 {
+  color: #047857;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.import-result p {
+  margin: 0.25rem 0;
+  color: #065F46;
+  font-size: 0.875rem;
+}
+
+.errors-list {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: 6px;
+}
+
+.errors-list p {
+  color: #991B1B;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.errors-list ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #B91C1C;
+  font-size: 0.8125rem;
+}
+
+.errors-list li {
+  margin: 0.25rem 0;
+}

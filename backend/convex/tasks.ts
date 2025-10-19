@@ -176,3 +176,74 @@ export const getTasksStats = query({
     };
   },
 });
+
+// Générer automatiquement plusieurs tâches vides
+export const generateEmptyTasks = mutation({
+  args: {
+    subdomainId: v.id("subdomains"),
+    count: v.number(),
+    prefix: v.string(),
+    criteriaCount: v.number(),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const { subdomainId, count, prefix, criteriaCount, userId } = args;
+    
+    // Validation
+    if (count <= 0 || count > 100) {
+      throw new Error("Le nombre de tâches doit être entre 1 et 100");
+    }
+    
+    if (!prefix || prefix.trim().length === 0) {
+      throw new Error("Le préfixe ne peut pas être vide");
+    }
+    
+    if (criteriaCount < 0 || criteriaCount > 20) {
+      throw new Error("Le nombre de critères doit être entre 0 et 20");
+    }
+    
+    // Vérifier que le sous-domaine existe
+    const subdomain = await ctx.db.get(subdomainId);
+    if (!subdomain || subdomain.deleted) {
+      throw new Error("Sous-domaine introuvable");
+    }
+    
+    const now = Date.now();
+    const taskIds: string[] = [];
+    
+    // Créer les critères vides
+    const emptyCriteria = [];
+    for (let j = 1; j <= criteriaCount; j++) {
+      emptyCriteria.push({
+        title: `Critère ${j}`,
+        videoUrl: "",
+      });
+    }
+    
+    // Créer les tâches vides
+    for (let i = 1; i <= count; i++) {
+      const taskId = await ctx.db.insert("tasks", {
+        title: `${prefix.trim()}${i}`,
+        videoUrl: "",
+        description: "",
+        baseline: "",
+        technicalDetails: "",
+        resourceIds: [],
+        subdomainId: subdomainId,
+        criteria: emptyCriteria,
+        createdBy: userId,
+        createdAt: now,
+        updatedAt: now,
+        deleted: false,
+      });
+      
+      taskIds.push(taskId);
+    }
+    
+    return { 
+      success: true, 
+      count: taskIds.length,
+      taskIds 
+    };
+  },
+});

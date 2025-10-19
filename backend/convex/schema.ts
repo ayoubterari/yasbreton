@@ -204,6 +204,10 @@ export default defineSchema({
     criteria: v.optional(v.array(v.object({
       title: v.string(),
       videoUrl: v.string(),
+      description: v.optional(v.string()),
+      baseline: v.optional(v.string()),
+      technicalDetails: v.optional(v.string()),
+      resourceIds: v.optional(v.array(v.id("files"))),
     }))),
     createdBy: v.id("users"),
     createdAt: v.number(),

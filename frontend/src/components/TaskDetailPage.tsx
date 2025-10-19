@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api, Task } from '../lib/convex-client'
-import VideoModal from './VideoModal'
 import './TaskDetailPage.css'
 
 interface FileResource {
@@ -19,13 +18,21 @@ export default function TaskDetailPage() {
   const [resources, setResources] = useState<FileResource[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'description' | 'baseline' | 'technical' | 'resources'>('description')
-  const [selectedVideo, setSelectedVideo] = useState<{ url: string; title: string } | null>(null)
+  const [currentVideo, setCurrentVideo] = useState<{ url: string; title: string } | null>(null)
+  const [selectedCriterionIndex, setSelectedCriterionIndex] = useState<number | null>(null)
 
   useEffect(() => {
     if (taskId) {
       loadTask()
     }
   }, [taskId])
+
+  useEffect(() => {
+    // Initialiser la vidéo principale quand la tâche est chargée
+    if (task && !currentVideo) {
+      setCurrentVideo({ url: task.videoUrl, title: task.title })
+    }
+  }, [task])
 
   const loadTask = async () => {
     try {
@@ -96,7 +103,18 @@ export default function TaskDetailPage() {
     )
   }
 
-  const embedUrl = getYoutubeEmbedUrl(task.videoUrl)
+  const handleCriterionClick = (index: number) => {
+    const criterion = task.criteria![index]
+    setCurrentVideo({ url: criterion.videoUrl, title: criterion.title })
+    setSelectedCriterionIndex(index)
+  }
+
+  const handleBackToMainVideo = () => {
+    setCurrentVideo({ url: task.videoUrl, title: task.title })
+    setSelectedCriterionIndex(null)
+  }
+
+  const embedUrl = currentVideo ? getYoutubeEmbedUrl(currentVideo.url) : null
 
   return (
     <div className="task-detail-page">
@@ -115,11 +133,23 @@ export default function TaskDetailPage() {
         <div className="task-main-content">
           {/* Video Section */}
           <div className="video-section">
+            {selectedCriterionIndex !== null && (
+              <div className="video-header">
+                <button className="btn-back-to-main" onClick={handleBackToMainVideo}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="19" y1="12" x2="5" y2="12"/>
+                    <polyline points="12 19 5 12 12 5"/>
+                  </svg>
+                  Retour à la présentation principale
+                </button>
+                <h3 className="video-title">{currentVideo?.title}</h3>
+              </div>
+            )}
             {embedUrl ? (
               <div className="video-embed">
                 <iframe
                   src={embedUrl}
-                  title={task.title}
+                  title={currentVideo?.title || task.title}
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -137,7 +167,7 @@ export default function TaskDetailPage() {
 
           {/* Presentation Section */}
           <div className="presentation-section">
-            <h2>Présentation générale</h2>
+            <h2>{selectedCriterionIndex !== null ? 'Informations du critère' : 'Présentation générale'}</h2>
             
             <div className="tabs">
               <button
@@ -169,54 +199,78 @@ export default function TaskDetailPage() {
             <div className="tab-content">
               {activeTab === 'description' && (
                 <div className="content-box">
-                  <p>{task.description}</p>
+                  <p>
+                    {selectedCriterionIndex !== null && task.criteria?.[selectedCriterionIndex]?.description
+                      ? task.criteria[selectedCriterionIndex].description
+                      : selectedCriterionIndex !== null
+                      ? 'Aucune description pour ce critère'
+                      : task.description}
+                  </p>
                 </div>
               )}
               
               {activeTab === 'baseline' && (
                 <div className="content-box">
-                  <p>{task.baseline}</p>
+                  <p>
+                    {selectedCriterionIndex !== null && task.criteria?.[selectedCriterionIndex]?.baseline
+                      ? task.criteria[selectedCriterionIndex].baseline
+                      : selectedCriterionIndex !== null
+                      ? 'Aucune ligne de base pour ce critère'
+                      : task.baseline}
+                  </p>
                 </div>
               )}
               
               {activeTab === 'technical' && (
                 <div className="content-box">
                   <h3>Matériel</h3>
-                  <p>{task.technicalDetails}</p>
+                  <p>
+                    {selectedCriterionIndex !== null && task.criteria?.[selectedCriterionIndex]?.technicalDetails
+                      ? task.criteria[selectedCriterionIndex].technicalDetails
+                      : selectedCriterionIndex !== null
+                      ? 'Aucun détail technique pour ce critère'
+                      : task.technicalDetails}
+                  </p>
                 </div>
               )}
               
               {activeTab === 'resources' && (
                 <div className="content-box">
-                  {resources.length === 0 ? (
-                    <p>Aucune ressource attachée à cette tâche.</p>
-                  ) : (
-                    <div className="resources-attached-list">
-                      <h3>Ressources attachées :</h3>
-                      <ul>
-                        {resources.map(resource => (
-                          <li key={resource._id} className="resource-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/>
-                              <polyline points="13 2 13 9 20 9"/>
-                            </svg>
-                            <div className="resource-details">
-                              <strong>{resource.titleFr}</strong>
-                              <span className="resource-filename">{resource.fileName}</span>
-                            </div>
-                            <a href={resource.fileUrl} target="_blank" rel="noopener noreferrer" className="btn-download-resource">
+                  {(() => {
+                    const currentResources = selectedCriterionIndex !== null && task.criteria?.[selectedCriterionIndex]?.resourceIds
+                      ? resources.filter(r => task.criteria![selectedCriterionIndex].resourceIds?.includes(r._id))
+                      : resources
+                    
+                    return currentResources.length === 0 ? (
+                      <p>Aucune ressource attachée.</p>
+                    ) : (
+                      <div className="resources-attached-list">
+                        <h3>Ressources attachées :</h3>
+                        <ul>
+                          {currentResources.map(resource => (
+                            <li key={resource._id} className="resource-item">
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-                                <polyline points="7 10 12 15 17 10"/>
-                                <line x1="12" y1="15" x2="12" y2="3"/>
+                                <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/>
+                                <polyline points="13 2 13 9 20 9"/>
                               </svg>
-                              Télécharger
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                              <div className="resource-details">
+                                <strong>{resource.titleFr}</strong>
+                                <span className="resource-filename">{resource.fileName}</span>
+                              </div>
+                              <a href={resource.fileUrl} target="_blank" rel="noopener noreferrer" className="btn-download-resource">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                  <polyline points="7 10 12 15 17 10"/>
+                                  <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                Télécharger
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  })()}
                 </div>
               )}
             </div>
@@ -231,11 +285,12 @@ export default function TaskDetailPage() {
               <div className="related-tasks">
                 {task.criteria.map((criterion, index) => {
                   const thumbnailUrl = getYoutubeThumbnail(criterion.videoUrl)
+                  const isActive = selectedCriterionIndex === index
                   return (
                     <div 
                       key={index} 
-                      className="related-task-item" 
-                      onClick={() => setSelectedVideo({ url: criterion.videoUrl, title: criterion.title })}
+                      className={`related-task-item ${isActive ? 'active' : ''}`}
+                      onClick={() => handleCriterionClick(index)}
                     >
                       <div className="task-thumbnail">
                         {thumbnailUrl ? (
@@ -284,14 +339,6 @@ export default function TaskDetailPage() {
         </aside>
       </div>
 
-      {/* Video Modal */}
-      {selectedVideo && (
-        <VideoModal
-          videoUrl={selectedVideo.url}
-          title={selectedVideo.title}
-          onClose={() => setSelectedVideo(null)}
-        />
-      )}
     </div>
   )
 }
