@@ -57,7 +57,7 @@ const domainsData = [
   }
 ];
 
-export async function insertDomainsAndSubdomains(userId: string) {
+export async function insertDomainsAndSubdomains() {
   console.log("🚀 Début de l'insertion des domaines et sous-domaines...\n");
 
   const results = {

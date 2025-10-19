@@ -21,7 +21,7 @@ export default function ImportDomainsButton() {
     setShowConfirm(false);
 
     try {
-      const results = await insertDomainsAndSubdomains(user.id);
+      const results = await insertDomainsAndSubdomains();
       setResult(results);
       
       if (results.errors.length === 0) {

@@ -13,7 +13,6 @@ export default function DomainsManagement() {
   const [showGenerateTasksForm, setShowGenerateTasksForm] = useState(false)
   const [editingDomain, setEditingDomain] = useState<Domain | null>(null)
   const [editingSubdomain, setEditingSubdomain] = useState<Subdomain | null>(null)
-  const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null)
   const [showSubdomainsModal, setShowSubdomainsModal] = useState(false)
   const [selectedDomainForModal, setSelectedDomainForModal] = useState<Domain | null>(null)
   const [selectedSubdomainForTasks, setSelectedSubdomainForTasks] = useState<Subdomain | null>(null)
