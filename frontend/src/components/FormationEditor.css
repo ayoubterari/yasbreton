@@ -53,6 +53,40 @@
   padding: 2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   border: 2px solid #E2E8F0;
+  position: relative;
+}
+
+/* Bouton flottant pour ajouter une section - Design 2025 */
+.btn-floating-add {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.btn-floating-add:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 12px 32px rgba(14, 165, 233, 0.5);
+}
+
+.btn-floating-add:active {
+  transform: scale(0.95) rotate(90deg);
+}
+
+.btn-floating-add svg {
+  transition: transform 0.3s;
 }
 
 .content-header {
@@ -477,4 +511,311 @@
   color: #64748B;
   font-size: 1rem;
   margin-top: 1rem;
+}
+
+/* Sélecteur de type de leçon - Design simplifié */
+.lesson-type-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.lesson-type-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1rem;
+  background: white;
+  border: 2px solid #E2E8F0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.lesson-type-btn svg {
+  color: #94A3B8;
+  transition: all 0.3s;
+}
+
+.lesson-type-btn:hover {
+  border-color: #0EA5E9;
+  background: #F0F9FF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+}
+
+.lesson-type-btn:hover svg {
+  color: #0EA5E9;
+  transform: scale(1.1);
+}
+
+.lesson-type-btn.active {
+  background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
+  border-color: #0EA5E9;
+  color: #0369A1;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+}
+
+.lesson-type-btn.active svg {
+  color: #0EA5E9;
+}
+
+/* Container pour la sélection de ressource */
+.resource-selection-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: #F8FAFC;
+  border-radius: 12px;
+  border: 2px solid #E2E8F0;
+}
+
+/* Labels avec icônes */
+.label-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0F172A;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.label-with-icon svg {
+  color: #0EA5E9;
+}
+
+/* Système de filtrage par tags - Design simplifié */
+.tags-filter-simple {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.tag-chip {
+  padding: 0.5rem 1rem;
+  background: white;
+  border: 2px solid #E2E8F0;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tag-chip:hover {
+  border-color: #0EA5E9;
+  background: #F0F9FF;
+  color: #0EA5E9;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
+}
+
+.tag-chip.selected {
+  background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%);
+  border-color: #0EA5E9;
+  color: white;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+}
+
+.tag-chip.selected:hover {
+  background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+}
+
+/* Select de ressource amélioré */
+.resource-select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  font-family: inherit;
+  background: white;
+  margin-top: 0.5rem;
+}
+
+.resource-select:focus {
+  outline: none;
+  border-color: #0EA5E9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+/* Badge de résultat de filtrage */
+.filter-result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+  border: 2px solid #10B981;
+  border-radius: 8px;
+  color: #065F46;
+  font-size: 0.875rem;
+  font-weight: 600;
+  animation: slideIn 0.3s ease-out;
+}
+
+.filter-result-badge svg {
+  color: #10B981;
+}
+
+/* Système de filtrage par tags - Design 2025 (ancien - conservé pour compatibilité) */
+.tags-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  border: 2px solid #BAE6FD;
+  border-radius: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.tag-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  background: white;
+  border: 2px solid #E0F2FE;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.tag-filter-item:hover {
+  border-color: #0EA5E9;
+  background: #F0F9FF;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+
+.tag-filter-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #CBD5E1;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+  background: white;
+  flex-shrink: 0;
+}
+
+.tag-filter-item input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%);
+  border-color: #0EA5E9;
+}
+
+.tag-filter-item input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.tag-filter-item:has(input:checked) {
+  background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
+  border-color: #0EA5E9;
+}
+
+.tag-filter-item span {
+  color: #334155;
+  transition: color 0.3s;
+}
+
+.tag-filter-item:has(input:checked) span {
+  color: #0369A1;
+  font-weight: 700;
+}
+
+.no-tags-info {
+  padding: 1rem;
+  background: #FEF3C7;
+  border: 2px solid #FDE68A;
+  border-radius: 8px;
+  color: #92400E;
+  font-size: 0.9rem;
+  margin: 0;
+  text-align: center;
+}
+
+.filter-info {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+  border: 2px solid #60A5FA;
+  border-radius: 8px;
+  color: #1E40AF;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .btn-floating-add {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+  }
+
+  .lesson-type-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-type-btn {
+    padding: 1rem 0.875rem;
+  }
+
+  .resource-selection-container {
+    padding: 1rem;
+  }
+
+  .tags-filter-simple {
+    gap: 0.375rem;
+  }
+
+  .tag-chip {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .tags-filter-grid {
+    grid-template-columns: 1fr;
+  }
 }

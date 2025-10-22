@@ -5,9 +5,10 @@ import './Auth.css';
 
 interface RegisterProps {
   onSwitchToLogin: () => void;
+  onClose?: () => void;
 }
 
-export default function Register({ onSwitchToLogin }: RegisterProps) {
+export default function Register({ onSwitchToLogin, onClose }: RegisterProps) {
   const [formData, setFormData] = useState({
     nom: '',
     prenom: '',
@@ -79,6 +80,10 @@ export default function Register({ onSwitchToLogin }: RegisterProps) {
       
       // Connecter automatiquement après l'inscription
       login(user);
+      // Fermer le modal après une inscription réussie
+      if (onClose) {
+        onClose();
+      }
     } catch (err: any) {
       setError(err.message || 'Erreur lors de l\'inscription');
     } finally {

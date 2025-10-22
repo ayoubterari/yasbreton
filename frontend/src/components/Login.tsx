@@ -5,9 +5,10 @@ import './Auth.css';
 
 interface LoginProps {
   onSwitchToRegister: () => void;
+  onClose?: () => void;
 }
 
-export default function Login({ onSwitchToRegister }: LoginProps) {
+export default function Login({ onSwitchToRegister, onClose }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -22,6 +23,10 @@ export default function Login({ onSwitchToRegister }: LoginProps) {
     try {
       const user = await api.auth.login({ email, password });
       login(user);
+      // Fermer le modal après une connexion réussie
+      if (onClose) {
+        onClose();
+      }
     } catch (err: any) {
       setError(err.message || 'Erreur lors de la connexion');
     } finally {

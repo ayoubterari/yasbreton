@@ -142,10 +142,10 @@ function App() {
 
       {/* Modaux globaux de connexion et d'inscription */}
       <Modal isOpen={showLoginModal} onClose={closeModals}>
-        <Login onSwitchToRegister={openRegister} />
+        <Login onSwitchToRegister={openRegister} onClose={closeModals} />
       </Modal>
       <Modal isOpen={showRegisterModal} onClose={closeModals}>
-        <Register onSwitchToLogin={openLogin} />
+        <Register onSwitchToLogin={openLogin} onClose={closeModals} />
       </Modal>
     </BrowserRouter>
   )

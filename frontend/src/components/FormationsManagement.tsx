@@ -27,6 +27,10 @@ export default function FormationsManagement() {
     isPremium: false,
     instructor: ''
   })
+  
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string>('')
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     loadFormations()
@@ -54,6 +58,52 @@ export default function FormationsManagement() {
     })
   }
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      setSelectedImage(file)
+      
+      // Créer une prévisualisation
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const uploadImage = async (file: File): Promise<string> => {
+    try {
+      // Étape 1 : Obtenir une URL d'upload depuis Convex
+      const uploadUrl = await api.files.generateUploadUrl()
+      
+      // Étape 2 : Uploader le fichier vers Convex Storage
+      const result = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      })
+      
+      if (!result.ok) {
+        throw new Error('Échec de l\'upload de l\'image')
+      }
+      
+      const { storageId } = await result.json()
+      
+      // Étape 3 : Obtenir l'URL de téléchargement
+      const imageUrl = await api.files.getFileUrl(storageId)
+      
+      if (!imageUrl) {
+        throw new Error('Impossible d\'obtenir l\'URL de l\'image')
+      }
+      
+      return imageUrl
+    } catch (error) {
+      console.error('Erreur lors de l\'upload:', error)
+      throw new Error('Impossible d\'uploader l\'image')
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -63,14 +113,25 @@ export default function FormationsManagement() {
     }
 
     try {
+      let thumbnailUrl = formData.thumbnail
+      
+      // Upload de l'image si une nouvelle image est sélectionnée
+      if (selectedImage) {
+        setUploading(true)
+        thumbnailUrl = await uploadImage(selectedImage)
+        setUploading(false)
+      }
+      
       if (editingFormation) {
         await api.formations.updateFormation({
           formationId: editingFormation._id,
-          ...formData
+          ...formData,
+          thumbnail: thumbnailUrl
         })
       } else {
         await api.formations.createFormation({
           ...formData,
+          thumbnail: thumbnailUrl,
           userId: user.id
         })
       }
@@ -80,6 +141,8 @@ export default function FormationsManagement() {
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error)
       alert('Erreur lors de la sauvegarde de la formation')
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -97,6 +160,8 @@ export default function FormationsManagement() {
       isPremium: formation.isPremium,
       instructor: formation.instructor
     })
+    setImagePreview(formation.thumbnail || '')
+    setSelectedImage(null)
     setShowForm(true)
   }
 
@@ -138,6 +203,8 @@ export default function FormationsManagement() {
       instructor: ''
     })
     setEditingFormation(null)
+    setSelectedImage(null)
+    setImagePreview('')
     setShowForm(false)
   }
 
@@ -267,15 +334,45 @@ export default function FormationsManagement() {
                 </div>
 
                 <div className="form-group full-width">
-                  <label htmlFor="thumbnail">URL de l'image de couverture</label>
-                  <input
-                    type="url"
-                    id="thumbnail"
-                    name="thumbnail"
-                    value={formData.thumbnail}
-                    onChange={handleChange}
-                    placeholder="https://..."
-                  />
+                  <label htmlFor="thumbnailImage">Image de couverture</label>
+                  <div className="image-upload-container">
+                    <input
+                      type="file"
+                      id="thumbnailImage"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      disabled={uploading}
+                      className="image-input"
+                    />
+                    <label htmlFor="thumbnailImage" className="image-upload-label">
+                      {imagePreview ? (
+                        <div className="image-preview-wrapper">
+                          <img src={imagePreview} alt="Aperçu" className="image-preview" />
+                          <div className="image-overlay">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                            </svg>
+                            <span>Changer l'image</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="image-upload-placeholder">
+                          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                            <polyline points="21 15 16 10 5 21"/>
+                          </svg>
+                          <span className="upload-text">Cliquez pour sélectionner une image</span>
+                          <span className="upload-hint">PNG, JPG, GIF jusqu'à 10MB</span>
+                        </div>
+                      )}
+                    </label>
+                    {selectedImage && (
+                      <p className="file-selected-info">
+                        📸 {selectedImage.name} ({(selectedImage.size / 1024).toFixed(2)} KB)
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="form-group full-width">
@@ -304,11 +401,11 @@ export default function FormationsManagement() {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="btn-cancel" onClick={resetForm}>
+                <button type="button" className="btn-cancel" onClick={resetForm} disabled={uploading}>
                   Annuler
                 </button>
-                <button type="submit" className="btn-submit">
-                  {editingFormation ? 'Mettre à jour' : 'Créer'}
+                <button type="submit" className="btn-submit" disabled={uploading}>
+                  {uploading ? 'Upload en cours...' : editingFormation ? 'Mettre à jour' : 'Créer'}
                 </button>
               </div>
             </form>

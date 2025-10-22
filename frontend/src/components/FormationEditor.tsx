@@ -30,6 +30,9 @@ export default function FormationEditor() {
     isFree: false
   })
   const [resources, setResources] = useState<FileResource[]>([])
+  const [availableTags, setAvailableTags] = useState<Array<{ _id: string; name: string }>>([])
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [filteredResources, setFilteredResources] = useState<FileResource[]>([])
 
   useEffect(() => {
     if (formationId) {
@@ -38,10 +41,35 @@ export default function FormationEditor() {
     }
   }, [formationId])
 
+  // Filtrer les ressources par tags sélectionnés
+  useEffect(() => {
+    if (selectedTags.length === 0) {
+      setFilteredResources(resources)
+    } else {
+      const filtered = resources.filter(resource => 
+        selectedTags.some(tag => resource.tags.includes(tag))
+      )
+      setFilteredResources(filtered)
+    }
+  }, [selectedTags, resources])
+
+  const handleToggleTag = (tagName: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tagName)
+        ? prev.filter(t => t !== tagName)
+        : [...prev, tagName]
+    )
+  }
+
   const loadResources = async () => {
     try {
-      const allResources = await api.files.getFiles()
+      const [allResources, tags] = await Promise.all([
+        api.files.getFiles(),
+        api.tags.getAll()
+      ])
       setResources(allResources)
+      setFilteredResources(allResources)
+      setAvailableTags(tags)
     } catch (error) {
       console.error('Erreur lors du chargement des ressources:', error)
     }
@@ -223,14 +251,15 @@ export default function FormationEditor() {
       <div className="editor-content">
         <div className="content-header">
           <h2>Programme de la formation</h2>
-          <button className="btn-primary" onClick={handleAddSection}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Ajouter une section
-          </button>
         </div>
+        
+        {/* Bouton flottant pour ajouter une section */}
+        <button className="btn-floating-add" onClick={handleAddSection} title="Ajouter une section">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
 
         {/* Liste des sections */}
         {sections.length === 0 ? (
@@ -386,30 +415,31 @@ export default function FormationEditor() {
                 />
               </div>
               
-              {/* Type de leçon */}
+              {/* Type de leçon - Design simplifié */}
               <div className="form-group">
                 <label>Type de leçon *</label>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                    <input
-                      type="radio"
-                      name="lessonType"
-                      value="video"
-                      checked={lessonData.lessonType === 'video'}
-                      onChange={() => setLessonData({ ...lessonData, lessonType: 'video' })}
-                    />
+                <div className="lesson-type-selector">
+                  <button
+                    type="button"
+                    className={`lesson-type-btn ${lessonData.lessonType === 'video' ? 'active' : ''}`}
+                    onClick={() => setLessonData({ ...lessonData, lessonType: 'video' })}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
                     <span>Vidéo YouTube</span>
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                    <input
-                      type="radio"
-                      name="lessonType"
-                      value="resource"
-                      checked={lessonData.lessonType === 'resource'}
-                      onChange={() => setLessonData({ ...lessonData, lessonType: 'resource' })}
-                    />
+                  </button>
+                  <button
+                    type="button"
+                    className={`lesson-type-btn ${lessonData.lessonType === 'resource' ? 'active' : ''}`}
+                    onClick={() => setLessonData({ ...lessonData, lessonType: 'resource' })}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                      <polyline points="13 2 13 9 20 9"/>
+                    </svg>
                     <span>Ressource (fichier)</span>
-                  </label>
+                  </button>
                 </div>
               </div>
 
@@ -427,21 +457,64 @@ export default function FormationEditor() {
                   />
                 </div>
               ) : (
-                <div className="form-group">
-                  <label htmlFor="lessonResource">Sélectionner une ressource *</label>
-                  <select
-                    id="lessonResource"
-                    value={lessonData.resourceId}
-                    onChange={(e) => setLessonData({ ...lessonData, resourceId: e.target.value })}
-                    required
-                  >
-                    <option value="">-- Choisir une ressource --</option>
-                    {resources.map((resource) => (
-                      <option key={resource._id} value={resource._id}>
-                        {resource.titleFr} ({resource.type === 'premium' ? 'Premium' : 'Gratuit'})
-                      </option>
-                    ))}
-                  </select>
+                <div className="resource-selection-container">
+                  {/* Sélection par tags - Design simplifié */}
+                  {availableTags.length > 0 && (
+                    <div className="form-group">
+                      <label className="label-with-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                          <line x1="7" y1="7" x2="7.01" y2="7"/>
+                        </svg>
+                        Filtrer par tags
+                      </label>
+                      <div className="tags-filter-simple">
+                        {availableTags.map((tag) => (
+                          <button
+                            key={tag._id}
+                            type="button"
+                            className={`tag-chip ${selectedTags.includes(tag.name) ? 'selected' : ''}`}
+                            onClick={() => handleToggleTag(tag.name)}
+                          >
+                            #{tag.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Sélection de la ressource */}
+                  <div className="form-group">
+                    <label htmlFor="lessonResource" className="label-with-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                        <polyline points="13 2 13 9 20 9"/>
+                      </svg>
+                      Sélectionner une ressource *
+                    </label>
+                    <select
+                      id="lessonResource"
+                      value={lessonData.resourceId}
+                      onChange={(e) => setLessonData({ ...lessonData, resourceId: e.target.value })}
+                      required
+                      className="resource-select"
+                    >
+                      <option value="">-- Choisir une ressource --</option>
+                      {filteredResources.map((resource) => (
+                        <option key={resource._id} value={resource._id}>
+                          {resource.titleFr} • {resource.type === 'premium' ? '⭐ Premium' : '✓ Gratuit'}
+                        </option>
+                      ))}
+                    </select>
+                    {selectedTags.length > 0 && (
+                      <div className="filter-result-badge">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        <span>{filteredResources.length} ressource(s) trouvée(s)</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
