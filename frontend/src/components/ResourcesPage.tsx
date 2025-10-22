@@ -95,7 +95,11 @@ export default function ResourcesPage({ onOpenLogin }: ResourcesPageProps) {
   const mainCategories = categories.filter(cat => !cat.parentId).sort((a, b) => a.order - b.order)
 
   return (
-    <div className="resources-page">
+    <div className="resources-page"
+         style={{ 
+           WebkitOverflowScrolling: 'touch', // Défilement fluide sur iOS
+           overscrollBehavior: 'contain' // Évite le rebond sur mobile
+         }}>
       {/* Hero Section */}
       <section className="resources-hero">
         <div className="hero-overlay"></div>
