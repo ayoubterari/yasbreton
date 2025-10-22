@@ -47,15 +47,7 @@ function App() {
           isAuthenticated ? (
             <Home />
           ) : (
-            <>
-              <PublicHome onOpenLogin={openLogin} onOpenRegister={openRegister} />
-              <Modal isOpen={showLoginModal} onClose={closeModals}>
-                <Login onSwitchToRegister={openRegister} />
-              </Modal>
-              <Modal isOpen={showRegisterModal} onClose={closeModals}>
-                <Register onSwitchToLogin={openLogin} />
-              </Modal>
-            </>
+            <PublicHome onOpenLogin={openLogin} onOpenRegister={openRegister} />
           )
         } />
 
@@ -147,6 +139,14 @@ function App() {
         {/* Redirection par défaut */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+
+      {/* Modaux globaux de connexion et d'inscription */}
+      <Modal isOpen={showLoginModal} onClose={closeModals}>
+        <Login onSwitchToRegister={openRegister} />
+      </Modal>
+      <Modal isOpen={showRegisterModal} onClose={closeModals}>
+        <Register onSwitchToLogin={openLogin} />
+      </Modal>
     </BrowserRouter>
   )
 }

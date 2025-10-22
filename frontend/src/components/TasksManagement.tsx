@@ -254,20 +254,26 @@ export default function TasksManagement() {
     }
 
     try {
+      // Nettoyer les critères pour n'envoyer que title et videoUrl
+      const cleanedCriteria = criteria.map(criterion => ({
+        title: criterion.title,
+        videoUrl: criterion.videoUrl
+      }))
+
       if (editingTask) {
         // Mode édition
         await api.tasks.updateTask({
           taskId: editingTask._id,
           ...formData,
           resourceIds: selectedResourceIds,
-          criteria
+          criteria: cleanedCriteria
         })
       } else {
         // Mode création
         await api.tasks.createTask({
           ...formData,
           resourceIds: selectedResourceIds,
-          criteria,
+          criteria: cleanedCriteria,
           userId: user.id
         })
       }
@@ -827,7 +833,12 @@ export default function TasksManagement() {
                   )}
                 </div>
                 <div className="criterion-actions-buttons">
-                  <button type="button" className="btn-add-criterion" onClick={addCriterion}>
+                  <button 
+                    type="button" 
+                    className="btn-save-criterion" 
+                    onClick={addCriterion}
+                    disabled={!currentCriterion.title.trim() || !currentCriterion.videoUrl.trim()}
+                  >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       {editingCriterionIndex !== null ? (
                         <>
@@ -836,13 +847,39 @@ export default function TasksManagement() {
                         </>
                       ) : (
                         <>
-                          <line x1="12" y1="5" x2="12" y2="19"/>
-                          <line x1="5" y1="12" x2="19" y2="12"/>
+                          <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                          <polyline points="17 21 17 13 7 13 7 21"/>
+                          <polyline points="7 3 7 8 15 8"/>
                         </>
                       )}
                     </svg>
-                    {editingCriterionIndex !== null ? 'Mettre à jour le critère' : 'Ajouter le critère'}
+                    {editingCriterionIndex !== null ? 'Mettre à jour' : 'Enregistrer'}
                   </button>
+                  
+                  {editingCriterionIndex === null && criteria.length > 0 && (
+                    <button 
+                      type="button" 
+                      className="btn-add-new-criterion" 
+                      onClick={() => {
+                        // Réinitialiser le formulaire pour ajouter un nouveau critère
+                        setCurrentCriterion({
+                          title: '',
+                          videoUrl: '',
+                          description: '',
+                          baseline: '',
+                          technicalDetails: '',
+                          resourceIds: []
+                        })
+                      }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                      </svg>
+                      Ajouter un autre critère
+                    </button>
+                  )}
+                  
                   {editingCriterionIndex !== null && (
                     <button type="button" className="btn-cancel-criterion" onClick={cancelEditCriterion}>
                       Annuler

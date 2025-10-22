@@ -1253,7 +1253,36 @@
   gap: 1rem;
 }
 
-.btn-add-criterion {
+.btn-add-criterion,
+.btn-save-criterion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #10B981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+
+.btn-add-criterion:hover,
+.btn-save-criterion:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-save-criterion:disabled {
+  background: #94A3B8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-add-new-criterion {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -1266,10 +1295,9 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  align-self: flex-start;
 }
 
-.btn-add-criterion:hover {
+.btn-add-new-criterion:hover {
   background: #0284C7;
   transform: translateY(-1px);
 }

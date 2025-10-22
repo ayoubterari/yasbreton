@@ -64,15 +64,31 @@ export default function ResourcesPage({ onOpenLogin }: ResourcesPageProps) {
     return matchSearch && matchCategory && matchType && matchSubcategory
   })
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' B'
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB'
-    return (bytes / (1024 * 1024)).toFixed(2) + ' MB'
-  }
-
   const getCategoryName = (categoryId: string) => {
     const cat = categories.find(c => c._id === categoryId)
     return cat ? cat.nameFr : ''
+  }
+
+  const getFileTypeLabel = (fileType: string) => {
+    const typeMap: { [key: string]: string } = {
+      'application/pdf': 'PDF',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'Word',
+      'application/msword': 'Word',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'Excel',
+      'application/vnd.ms-excel': 'Excel',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'PowerPoint',
+      'application/vnd.ms-powerpoint': 'PowerPoint',
+      'image/jpeg': 'Image',
+      'image/jpg': 'Image',
+      'image/png': 'Image',
+      'image/gif': 'Image',
+      'text/plain': 'Texte',
+      'video/mp4': 'Vidéo',
+      'video/mpeg': 'Vidéo',
+      'audio/mpeg': 'Audio',
+      'audio/mp3': 'Audio'
+    }
+    return typeMap[fileType] || 'Fichier'
   }
 
   // Obtenir uniquement les catégories principales (sans parentId)
@@ -263,7 +279,7 @@ export default function ResourcesPage({ onOpenLogin }: ResourcesPageProps) {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z" />
                         </svg>
-                        {formatFileSize(file.fileSize)}
+                        {getFileTypeLabel(file.fileType)}
                       </span>
                     </div>
                   </div>
@@ -299,31 +315,17 @@ export default function ResourcesPage({ onOpenLogin }: ResourcesPageProps) {
                         </button>
                       )
                     ) : (
-                      // Visiteur non connecté : peut lire les fichiers gratuits
-                      file.type === 'free' ? (
-                        <button
-                          onClick={() => setViewingFile(file)}
-                          className="btn-read"
-                        >
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                            <circle cx="12" cy="12" r="3" />
-                          </svg>
-                          Lire
-                        </button>
-                      ) : (
-                        // Fichier premium : doit se connecter
-                        <button
-                          onClick={onOpenLogin}
-                          className="btn-read btn-login-required"
-                          title="Connectez-vous pour accéder au contenu premium"
-                        >
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
-                          </svg>
-                          Se connecter
-                        </button>
-                      )
+                      // Visiteur non connecté : doit se connecter pour lire tout fichier
+                      <button
+                        onClick={onOpenLogin}
+                        className="btn-read btn-login-required"
+                        title="Connectez-vous pour accéder à cette ressource"
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M13.8 12H3" />
+                        </svg>
+                        Se connecter
+                      </button>
                     )}
                   </div>
                 </div>
