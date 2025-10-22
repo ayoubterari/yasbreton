@@ -118,6 +118,10 @@ export default function DomainsPage() {
         </div>
 
         <div className="search-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
           <input
             type="text"
             placeholder="Rechercher par code ou titre..."
@@ -127,6 +131,97 @@ export default function DomainsPage() {
         </div>
       </div>
 
+      {/* Grille principale des domaines */}
+      <div className="domains-grid">
+        {domains.map((domain, index) => {
+          const domainSubdomains = getSubdomainsByDomain(domain._id)
+          const totalTasks = domainSubdomains.reduce((acc, sub) => acc + getTasksBySubdomain(sub._id).length, 0)
+          
+          return (
+            <div key={domain._id} className="domain-card">
+              {/* Badge numéroté */}
+              <div className="domain-badge">
+                {index + 1}
+              </div>
+              
+              {/* Contenu principal de la carte */}
+              <div className="domain-card-content">
+                <div className="domain-card-header">
+                  <div className="domain-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      {index === 0 && <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>}
+                      {index === 1 && <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>}
+                      {index === 2 && <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>}
+                      {index === 3 && <path d="M13 10V3L4 14h7v7l9-11h-7z"/>}
+                    </svg>
+                  </div>
+                  <h3 className="domain-title">{domain.name}</h3>
+                  <div className="domain-stats">
+                    <span className="task-count">{totalTasks} tâches</span>
+                    <span className="subdomain-count">{domainSubdomains.length} sous-domaines</span>
+                  </div>
+                </div>
+                
+                {/* Description si disponible */}
+                {domain.description && (
+                  <p className="domain-description">{domain.description}</p>
+                )}
+              </div>
+              
+              {/* Actions en bas de carte */}
+              <div className="domain-card-actions">
+                <button 
+                  className="action-btn view-btn"
+                  onClick={() => {
+                    // Navigation vers la vue détaillée du domaine
+                    navigate(`/domains/${domain._id}`)
+                  }}
+                  title="Voir les détails"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                  </svg>
+                </button>
+                
+                <button 
+                  className="action-btn edit-btn"
+                  onClick={() => {
+                    // Navigation vers l'édition du domaine
+                    navigate(`/admin/domains/${domain._id}/edit`)
+                  }}
+                  title="Modifier"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                  </svg>
+                </button>
+                
+                <button 
+                  className="action-btn delete-btn"
+                  onClick={() => {
+                    if (confirm(`Êtes-vous sûr de vouloir supprimer le domaine "${domain.name}" ?`)) {
+                      // Logique de suppression
+                      console.log('Suppression du domaine:', domain._id)
+                    }
+                  }}
+                  title="Supprimer"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="3,6 5,6 21,6"/>
+                    <path d="M19,6v14a2,2 0,0,1-2,2H7a2,2 0,0,1-2-2V6m3,0V4a2,2 0,0,1,2-2h4a2,2 0,0,1,2,2v2"/>
+                    <line x1="10" y1="11" x2="10" y2="17"/>
+                    <line x1="14" y1="11" x2="14" y2="17"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Section détaillée des sous-domaines (optionnelle) */}
       <div className="subdomains-grid">
         {domains.map(domain => {
           const domainSubdomains = searchFilteredSubdomains.filter(
@@ -137,7 +232,7 @@ export default function DomainsPage() {
 
           return (
             <div key={domain._id} className="domain-section">
-              <h2 className="domain-title">{domain.name}</h2>
+              <h2 className="domain-section-title">{domain.name}</h2>
               <div className="subdomain-cards">
                 {domainSubdomains.map(subdomain => {
                   const subdomainTasks = getTasksBySubdomain(subdomain._id)

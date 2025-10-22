@@ -107,25 +107,25 @@
 .hero-section {
   background: linear-gradient(180deg, #F8FAFC 0%, white 100%);
   border-bottom: 1px solid #E2E8F0;
-  padding: 2rem 0;
+  padding: 1.2rem 0;
 }
 
 .hero-container {
-  max-width: 1200px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.2rem;
   display: grid;
-  grid-template-columns: 350px 1fr;
-  gap: 2rem;
+  grid-template-columns: 210px 1fr;
+  gap: 1.2rem;
   align-items: start;
 }
 
 .formation-thumbnail-hero {
   width: 100%;
-  height: 250px;
-  border-radius: 12px;
+  height: 150px;
+  border-radius: 7px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(14, 165, 233, 0.15);
+  box-shadow: 0 5px 19px rgba(14, 165, 233, 0.15);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
@@ -170,7 +170,7 @@
 
 .hero-info h1 {
   color: #0F172A;
-  font-size: 1.875rem;
+  font-size: 1.125rem;
   font-weight: 800;
   margin: 0;
   line-height: 1.2;
@@ -211,8 +211,8 @@
 
 .action-buttons {
   display: flex;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 0.45rem;
+  margin-top: 0.6rem;
   flex-wrap: wrap;
 }
 
@@ -220,18 +220,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
+  gap: 0.3rem;
+  padding: 0.525rem 0.9rem;
   background: white;
   color: #0EA5E9;
   border: 2px solid #0EA5E9;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 5px;
+  font-size: 0.57rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
   flex: 1;
-  min-width: 200px;
+  min-width: 120px;
 }
 
 .btn-description:hover {
@@ -248,19 +248,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.75rem;
+  gap: 0.3rem;
+  padding: 0.525rem 1.05rem;
   background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 5px;
+  font-size: 0.57rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
   flex: 1;
-  min-width: 200px;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+  min-width: 120px;
+  box-shadow: 0 2px 7px rgba(14, 165, 233, 0.3);
 }
 
 .btn-primary:hover {
@@ -276,18 +276,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.75rem;
+  gap: 0.3rem;
+  padding: 0.525rem 1.05rem;
   background: white;
   color: #0EA5E9;
   border: 2px solid #0EA5E9;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 5px;
+  font-size: 0.57rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
   flex: 1;
-  min-width: 200px;
+  min-width: 120px;
 }
 
 .btn-secondary:hover {
@@ -303,46 +303,46 @@
 /* Video Section */
 .video-section {
   background: white;
-  padding: 2rem 0;
+  padding: 1.2rem 0;
   border-bottom: 1px solid #E2E8F0;
 }
 
 .video-container {
-  max-width: 900px;
+  max-width: 540px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.2rem;
 }
 
 .video-container iframe {
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.1);
 }
 
 /* Content Section */
 .content-section {
-  padding: 2rem 0;
+  padding: 1.2rem 0;
 }
 
 .content-container {
-  max-width: 1200px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.2rem;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.45rem;
   border-bottom: 2px solid #E2E8F0;
 }
 
 .section-header h2 {
   color: #0F172A;
-  font-size: 1.5rem;
+  font-size: 0.9rem;
   font-weight: 700;
   margin: 0;
 }
@@ -360,18 +360,18 @@
 .curriculum {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.45rem;
 }
 
 .curriculum-section {
   background: white;
   border: 2px solid #E2E8F0;
-  border-radius: 10px;
+  border-radius: 6px;
   overflow: hidden;
 }
 
 .section-header-item {
-  padding: 0.875rem 1rem;
+  padding: 0.525rem 0.6rem;
   background: white;
   cursor: pointer;
   transition: all 0.2s;
@@ -404,12 +404,12 @@
 .section-title {
   color: #0F172A;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.57rem;
 }
 
 .lesson-count {
   color: #64748B;
-  font-size: 0.85rem;
+  font-size: 0.51rem;
   font-weight: 600;
 }
 
@@ -419,10 +419,10 @@
 }
 
 .lesson-item {
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  padding: 0.45rem 0.6rem 0.45rem 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.875rem;
+  gap: 0.525rem;
   border-bottom: 1px solid #F1F5F9;
   transition: all 0.2s;
 }
@@ -436,8 +436,8 @@
 }
 
 .lesson-icon {
-  width: 24px;
-  height: 24px;
+  width: 14px;
+  height: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -456,7 +456,7 @@
 
 .lesson-title {
   color: #0F172A;
-  font-size: 0.95rem;
+  font-size: 0.57rem;
   font-weight: 500;
   display: block;
   margin-bottom: 0;
@@ -725,48 +725,48 @@
 @media (max-width: 1024px) {
   .hero-container {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 0.9rem;
   }
 
   .formation-thumbnail-hero {
-    height: 220px;
+    height: 132px;
   }
 
   .hero-info h1 {
-    font-size: 1.75rem;
+    font-size: 1.05rem;
   }
 }
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 1.5rem 0;
+    padding: 0.9rem 0;
   }
 
   .formation-thumbnail-hero {
-    height: 180px;
-    border-radius: 10px;
+    height: 108px;
+    border-radius: 6px;
   }
 
   .hero-info {
-    gap: 0.5rem;
+    gap: 0.3rem;
   }
 
   .hero-info h1 {
-    font-size: 1.375rem;
+    font-size: 0.825rem;
   }
 
   .category-badge {
-    font-size: 0.7rem;
-    padding: 0.3rem 0.7rem;
+    font-size: 0.42rem;
+    padding: 0.18rem 0.42rem;
   }
 
   .meta-row {
-    font-size: 0.8rem;
-    gap: 0.5rem;
+    font-size: 0.48rem;
+    gap: 0.3rem;
   }
 
   .description {
-    font-size: 0.95rem;
+    font-size: 0.57rem;
   }
 
   .action-buttons {
@@ -778,7 +778,7 @@
   .btn-secondary {
     width: 100%;
     min-width: auto;
-    padding: 0.875rem 1.25rem;
+    padding: 0.525rem 0.75rem;
   }
 
   .description-modal-body {

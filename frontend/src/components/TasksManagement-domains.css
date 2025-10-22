@@ -2,34 +2,31 @@
 
 /* Liste des domaines */
 .domains-list-tasks {
-  padding: 3rem 0;
+  padding: 1rem 0;
 }
 
-.section-title {
-  color: #0F172A;
-  font-size: 2.25rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  text-align: center;
-}
 
-/* Grille des domaines */
+
+/* Grille des domaines - Matrice 2x2 */
 .domains-grid-tasks {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-  gap: 2.25rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.35rem;
 }
 
-/* Carte de domaine */
+/* Carte de domaine - Matrice 2x2 */
 .domain-card-tasks {
   background: white;
-  border: 3px solid #E2E8F0;
-  border-left: 6px solid #0EA5E9;
-  border-radius: 18px;
-  padding: 2.25rem;
+  border: 2px solid #E2E8F0;
+  border-left: 4px solid #0EA5E9;
+  border-radius: 12px;
+  padding: 1.8rem;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
 .domain-card-tasks:hover {
@@ -42,81 +39,93 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
   color: white;
-  border-radius: 15px;
-  font-size: 1.875rem;
+  border-radius: 12px;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.3);
+  margin-bottom: 1.2rem;
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
 }
 
 .domain-title-tasks {
   color: #0F172A;
-  font-size: 1.6875rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.8rem 0;
   line-height: 1.3;
 }
 
 .domain-description-tasks {
   color: #64748B;
-  font-size: 1.3125rem;
-  margin: 0 0 1.5rem 0;
+  font-size: 0.95rem;
+  margin: 0 0 1.2rem 0;
   line-height: 1.5;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  flex: 1;
 }
 
 .domain-stats-tasks {
   display: flex;
-  gap: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 3px solid #F1F5F9;
+  gap: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 2px solid #F1F5F9;
+  margin-top: auto;
 }
 
 .stat-item {
   display: flex;
   align-items: center;
-  gap: 0.5625rem;
+  gap: 0.5rem;
   color: #64748B;
-  font-size: 1.3125rem;
+  font-size: 0.9rem;
   font-weight: 600;
+}
+
+.stat-item svg {
+  width: 16px;
+  height: 16px;
 }
 
 .stat-item svg {
   color: #0EA5E9;
 }
 
-/* Header du domaine sélectionné */
+/* Header du domaine sélectionné - Réduit de 40% */
 .domain-header-tasks {
   background: white;
-  border: 3px solid #E2E8F0;
-  border-radius: 18px;
-  padding: 2.25rem;
-  margin-bottom: 3rem;
+  border: 2px solid #E2E8F0;
+  border-radius: 11px;
+  padding: 1.35rem;
+  margin-bottom: 1.8rem;
   display: flex;
   align-items: center;
-  gap: 2.25rem;
+  gap: 1.35rem;
 }
 
 .btn-back {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.9375rem 1.6875rem;
+  gap: 0.45rem;
+  padding: 0.5625rem 1.0125rem;
   background: white;
-  border: 3px solid #E2E8F0;
-  border-radius: 12px;
+  border: 2px solid #E2E8F0;
+  border-radius: 7px;
   color: #64748B;
-  font-size: 1.40625rem;
+  font-size: 0.84375rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.btn-back svg {
+  width: 12px;
+  height: 12px;
 }
 
 .btn-back:hover {
@@ -127,40 +136,67 @@
 
 .domain-title-header {
   color: #0F172A;
-  font-size: 2.25rem;
+  font-size: 1.35rem;
   font-weight: 700;
   margin: 0;
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.9rem;
 }
 
 .domain-number-header {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 54px;
-  height: 54px;
+  width: 32px;
+  height: 32px;
   background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
   color: white;
-  border-radius: 12px;
-  font-size: 1.6875rem;
+  border-radius: 7px;
+  font-size: 1.0125rem;
   font-weight: 700;
 }
 
 .domain-stats-header {
   display: flex;
-  gap: 2.25rem;
+  gap: 1.35rem;
   color: #64748B;
-  font-size: 1.40625rem;
+  font-size: 0.84375rem;
   font-weight: 600;
 }
 
 .domain-stats-header span {
-  padding: 0.75rem 1.5rem;
+  padding: 0.45rem 0.9rem;
   background: #F0F9FF;
-  border: 1.5px solid #BAE6FD;
-  border-radius: 9px;
+  border: 1px solid #BAE6FD;
+  border-radius: 5px;
   color: #0369A1;
+}
+
+/* Responsive pour la matrice 2x2 des domaines */
+@media (max-width: 768px) {
+  .domains-grid-tasks {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .domain-card-tasks {
+    min-height: 160px;
+    padding: 1.2rem;
+  }
+  
+  .domain-number-tasks {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .domain-title-tasks {
+    font-size: 1.1rem;
+  }
+  
+  .domain-description-tasks {
+    font-size: 0.85rem;
+  }
 }
