@@ -11,6 +11,7 @@ export default function DomainsPage() {
   const [loading, setLoading] = useState(true)
   const [selectedSubdomainId, setSelectedSubdomainId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [openSubdomains, setOpenSubdomains] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     loadData()
@@ -51,6 +52,13 @@ export default function DomainsPage() {
         sub.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : filteredSubdomains
+
+  const toggleSubdomain = (subdomainId: string) => {
+    setOpenSubdomains(prev => ({
+      ...prev,
+      [subdomainId]: !prev[subdomainId]
+    }))
+  }
 
   if (loading) {
     return (
@@ -134,13 +142,29 @@ export default function DomainsPage() {
                 {domainSubdomains.map(subdomain => {
                   const subdomainTasks = getTasksBySubdomain(subdomain._id)
                   
+                  const isOpen = openSubdomains[subdomain._id] || false
+                  
                   return (
                     <div key={subdomain._id} className="subdomain-card">
-                      <div className="subdomain-card-header">
+                      <div 
+                        className="subdomain-card-header"
+                        onClick={() => toggleSubdomain(subdomain._id)}
+                        style={{ cursor: 'pointer' }}
+                      >
                         <div className="subdomain-icon">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <polyline points="9 11 12 14 22 4"/>
-                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                          <svg 
+                            width="24" 
+                            height="24" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            strokeWidth="2"
+                            style={{ 
+                              transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+                              transition: 'transform 0.3s ease'
+                            }}
+                          >
+                            <polyline points="9 18 15 12 9 6"/>
                           </svg>
                         </div>
                         <div className="subdomain-info">
@@ -148,29 +172,33 @@ export default function DomainsPage() {
                           <span className="task-count">{subdomainTasks.length} tâche(s)</span>
                         </div>
                       </div>
-                      {subdomain.description && (
-                        <p className="subdomain-description">{subdomain.description}</p>
-                      )}
-                      
-                      {subdomainTasks.length > 0 ? (
-                        <div className="tasks-list">
-                          {subdomainTasks.map(task => (
-                            <div
-                              key={task._id}
-                              className="task-item"
-                              onClick={() => navigate(`/tasks/${task._id}`)}
-                            >
-                              <div className="task-item-icon">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                  <polygon points="5 3 19 12 5 21 5 3"/>
-                                </svg>
-                              </div>
-                              <span className="task-item-title">{task.title}</span>
+                      {isOpen && (
+                        <>
+                          {subdomain.description && (
+                            <p className="subdomain-description">{subdomain.description}</p>
+                          )}
+                          
+                          {subdomainTasks.length > 0 ? (
+                            <div className="tasks-list">
+                              {subdomainTasks.map(task => (
+                                <div
+                                  key={task._id}
+                                  className="task-item"
+                                  onClick={() => navigate(`/tasks/${task._id}`)}
+                                >
+                                  <div className="task-item-icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <polygon points="5 3 19 12 5 21 5 3"/>
+                                    </svg>
+                                  </div>
+                                  <span className="task-item-title">{task.title}</span>
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="no-tasks">Aucune tâche pour ce sous-domaine</p>
+                          ) : (
+                            <p className="no-tasks">Aucune tâche pour ce sous-domaine</p>
+                          )}
+                        </>
                       )}
                     </div>
                   )

@@ -42,7 +42,9 @@ export default function ImportDomainsButton() {
       <button
         className="btn-import-domains"
         onClick={() => setShowConfirm(true)}
-        disabled={loading}
+        disabled={true}
+        style={{ opacity: 0.5, cursor: 'not-allowed' }}
+        title="Import déjà effectué"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>

@@ -35,13 +35,14 @@ export default function ImportABLLSTasksButton() {
   return (
     <button
       onClick={handleImport}
-      disabled={loading}
+      disabled={true}
       className="btn-primary"
       style={{
-        opacity: loading ? 0.6 : 1,
-        cursor: loading ? 'wait' : 'pointer',
+        opacity: 0.5,
+        cursor: 'not-allowed',
         background: success ? '#10B981' : undefined
       }}
+      title="Insertion déjà effectuée"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>

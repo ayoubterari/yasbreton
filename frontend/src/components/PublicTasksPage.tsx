@@ -27,10 +27,19 @@ export default function PublicTasksPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null)
   const [selectedSubdomain, setSelectedSubdomain] = useState<string | null>(null)
+  const [randomTasks, setRandomTasks] = useState<Task[]>([])
 
   useEffect(() => {
     loadTasks()
   }, [])
+
+  // Générer 10 tâches aléatoires quand les tâches sont chargées
+  useEffect(() => {
+    if (tasks.length > 0) {
+      const shuffled = [...tasks].sort(() => Math.random() - 0.5)
+      setRandomTasks(shuffled.slice(0, 10))
+    }
+  }, [tasks])
 
   const loadTasks = async () => {
     try {
@@ -74,6 +83,9 @@ export default function PublicTasksPage() {
     
     return matchSearch && matchDomain && matchSubdomain
   })
+
+  // Déterminer quelles tâches afficher
+  const displayTasks = selectedDomain ? filteredTasks : randomTasks
 
   // Compter les tâches par domaine
   const getTaskCountByDomain = (domainId: string) => {
@@ -135,7 +147,9 @@ export default function PublicTasksPage() {
           </div>
 
           <div className="tasks-count">
-            <span className="count-badge">{filteredTasks.length} tâches</span>
+            <span className="count-badge">
+              {selectedDomain ? `${filteredTasks.length} tâches` : `${randomTasks.length} tâches aléatoires`}
+            </span>
           </div>
         </div>
       </div>
@@ -257,7 +271,7 @@ export default function PublicTasksPage() {
             <div className="spinner"></div>
             <p>Chargement des tâches...</p>
           </div>
-        ) : filteredTasks.length === 0 ? (
+        ) : displayTasks.length === 0 ? (
           <div className="empty-state">
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/>
@@ -268,7 +282,7 @@ export default function PublicTasksPage() {
           </div>
         ) : (
           <div className="tasks-grid">
-            {filteredTasks.map((task) => {
+            {displayTasks.map((task) => {
               const embedUrl = getYoutubeEmbedUrl(task.videoUrl)
               
               return (
