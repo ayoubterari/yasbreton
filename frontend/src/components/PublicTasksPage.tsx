@@ -121,38 +121,7 @@ export default function PublicTasksPage() {
         </div>
       </header>
 
-      {/* Filter Section */}
-      <div className="filter-section">
-        <div className="filter-container">
-          <div className="filter-header">
-            <h2>Filtre</h2>
-            <button className="btn-reset" onClick={() => setSearchTerm('')}>
-              ↻ Réinitialiser
-            </button>
-          </div>
-          
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Rechercher par code, titre, domaine ou catégorie..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
 
-          <div className="filter-info">
-            <p>
-              Filtrer par <strong>domaine principal</strong>, puis <strong>domaine</strong>. Les tâches s'affichent dynamiquement.
-            </p>
-          </div>
-
-          <div className="tasks-count">
-            <span className="count-badge">
-              {selectedDomain ? `${filteredTasks.length} tâches` : `${randomTasks.length} tâches aléatoires`}
-            </span>
-          </div>
-        </div>
-      </div>
 
       {/* Domaines et Sous-domaines Section */}
       {!loading && domains.length > 0 && (
