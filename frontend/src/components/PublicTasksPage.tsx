@@ -24,7 +24,7 @@ export default function PublicTasksPage() {
   const [domains, setDomains] = useState<Domain[]>([])
   const [subdomains, setSubdomains] = useState<Subdomain[]>([])
   const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm] = useState('')
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null)
   const [selectedSubdomain, setSelectedSubdomain] = useState<string | null>(null)
   const [randomTasks, setRandomTasks] = useState<Task[]>([])

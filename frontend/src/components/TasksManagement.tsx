@@ -21,7 +21,7 @@ export default function TasksManagement() {
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery] = useState('')
   const [formData, setFormData] = useState({
     title: '',
     videoUrl: '',
