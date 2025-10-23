@@ -155,35 +155,52 @@ export default function PublicTasksPage() {
                         }
                       }}
                     >
-                      <div className="domain-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <circle cx="12" cy="12" r="10"/>
-                          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                          <path d="M2 12h20"/>
-                        </svg>
-                      </div>
-                      <div className="domain-content">
-                        <h3 className="domain-name">{domain.name}</h3>
-                        {domain.description && (
-                          <p className="domain-description">{domain.description}</p>
-                        )}
-                        <div className="domain-meta">
-                          <span className="task-count">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M9 11l3 3L22 4"/>
-                              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-                            </svg>
-                            {taskCount} tâche{taskCount > 1 ? 's' : ''}
-                          </span>
-                          <span className="subdomain-count">
-                            {domainSubdomains.length} sous-domaine{domainSubdomains.length > 1 ? 's' : ''}
-                          </span>
+                      <div className="domain-card-header">
+                        <div className="domain-icon">
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                            <path d="M2 12h20"/>
+                          </svg>
+                        </div>
+                        <div className="domain-content">
+                          <h3 className="domain-name">{domain.name}</h3>
+                          {domain.description && (
+                            <p className="domain-description">{domain.description}</p>
+                          )}
                         </div>
                       </div>
-                      <div className="domain-arrow">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <polyline points="9 18 15 12 9 6"/>
-                        </svg>
+                      
+                      <div className="domain-meta">
+                        <span className="task-count">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M9 11l3 3L22 4"/>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                          </svg>
+                          {taskCount} tâche{taskCount > 1 ? 's' : ''}
+                        </span>
+                        <span className="subdomain-count">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            <polyline points="9 22 9 12 15 12 15 22"/>
+                          </svg>
+                          {domainSubdomains.length} sous-domaine{domainSubdomains.length > 1 ? 's' : ''}
+                        </span>
+                      </div>
+
+                      <div className="domain-footer">
+                        <div className="domain-status">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9 12l2 2 4-4"/>
+                          </svg>
+                          Disponible
+                        </div>
+                        <div className="domain-arrow">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="9 18 15 12 9 6"/>
+                          </svg>
+                        </div>
                       </div>
                     </div>
 
