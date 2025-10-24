@@ -254,26 +254,20 @@ export default function TasksManagement() {
     }
 
     try {
-      // Nettoyer les critères pour n'envoyer que title et videoUrl
-      const cleanedCriteria = criteria.map(criterion => ({
-        title: criterion.title,
-        videoUrl: criterion.videoUrl
-      }))
-
       if (editingTask) {
         // Mode édition
         await api.tasks.updateTask({
           taskId: editingTask._id,
           ...formData,
           resourceIds: selectedResourceIds,
-          criteria: cleanedCriteria
+          criteria: criteria
         })
       } else {
         // Mode création
         await api.tasks.createTask({
           ...formData,
           resourceIds: selectedResourceIds,
-          criteria: cleanedCriteria,
+          criteria: criteria,
           userId: user.id
         })
       }

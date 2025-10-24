@@ -15,6 +15,10 @@ export const createTask = mutation({
     criteria: v.optional(v.array(v.object({
       title: v.string(),
       videoUrl: v.string(),
+      description: v.optional(v.string()),
+      baseline: v.optional(v.string()),
+      technicalDetails: v.optional(v.string()),
+      resourceIds: v.optional(v.array(v.id("files"))),
     }))),
     userId: v.id("users"),
   },
@@ -84,6 +88,10 @@ export const updateTask = mutation({
     criteria: v.optional(v.array(v.object({
       title: v.string(),
       videoUrl: v.string(),
+      description: v.optional(v.string()),
+      baseline: v.optional(v.string()),
+      technicalDetails: v.optional(v.string()),
+      resourceIds: v.optional(v.array(v.id("files"))),
     }))),
   },
   handler: async (ctx, args) => {
