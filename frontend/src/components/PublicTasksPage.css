@@ -283,6 +283,27 @@
   border-color: #BAE6FD;
 }
 
+/* Couleurs spécifiques par domaine */
+.domain-card:nth-child(1):hover {
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.15), 0 10px 10px -5px rgba(59, 130, 246, 0.05);
+  border-color: #BFDBFE;
+}
+
+.domain-card:nth-child(2):hover {
+  box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.15), 0 10px 10px -5px rgba(16, 185, 129, 0.05);
+  border-color: #A7F3D0;
+}
+
+.domain-card:nth-child(3):hover {
+  box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.15), 0 10px 10px -5px rgba(245, 158, 11, 0.05);
+  border-color: #FDE68A;
+}
+
+.domain-card:nth-child(4):hover {
+  box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.15), 0 10px 10px -5px rgba(139, 92, 246, 0.05);
+  border-color: #C4B5FD;
+}
+
 .domain-card:hover::before {
   transform: scaleX(1);
 }
@@ -297,6 +318,31 @@
   color: white;
   box-shadow: 0 20px 25px -5px rgba(14, 165, 233, 0.3), 0 10px 10px -5px rgba(14, 165, 233, 0.1);
   transform: translateY(-4px) scale(1.05);
+}
+
+/* États sélectionnés avec couleurs spécifiques */
+.domain-card:nth-child(1).selected {
+  background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+  border-color: #3B82F6;
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.3), 0 10px 10px -5px rgba(59, 130, 246, 0.1);
+}
+
+.domain-card:nth-child(2).selected {
+  background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+  border-color: #10B981;
+  box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.3), 0 10px 10px -5px rgba(16, 185, 129, 0.1);
+}
+
+.domain-card:nth-child(3).selected {
+  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+  border-color: #F59E0B;
+  box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.3), 0 10px 10px -5px rgba(245, 158, 11, 0.1);
+}
+
+.domain-card:nth-child(4).selected {
+  background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  border-color: #8B5CF6;
+  box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.3), 0 10px 10px -5px rgba(139, 92, 246, 0.1);
 }
 
 .domain-card.selected::before {
