@@ -355,7 +355,7 @@ export default function FormationEditor() {
 
       {/* Modal Section */}
       {showSectionModal && (
-        <div className="modal-overlay" onClick={() => setShowSectionModal(false)}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingSection ? 'Modifier la section' : 'Nouvelle section'}</h2>
@@ -388,7 +388,7 @@ export default function FormationEditor() {
 
       {/* Modal Leçon */}
       {showLessonModal && (
-        <div className="modal-overlay" onClick={() => setShowLessonModal(false)}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingLesson ? 'Modifier la leçon' : 'Nouvelle leçon'}</h2>

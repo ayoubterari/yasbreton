@@ -75,7 +75,7 @@ export default function FormationStatsModal({ isOpen, onClose, formation }: Form
   if (!isOpen) return null
 
   return (
-    <div className="stats-modal-overlay" onClick={onClose}>
+    <div className="stats-modal-overlay">
       <div className="stats-modal-content" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="stats-modal-header">

@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 import { api, Domain, Subdomain } from '../lib/convex-client'
-import ImportDomainsButton from './ImportDomainsButton'
-import ImportABLLSTasksButton from './ImportABLLSTasksButton'
 import './DomainsManagement.css'
 
 export default function DomainsManagement() {
@@ -272,8 +270,6 @@ export default function DomainsManagement() {
       <div className="page-header">
         <h1>Gestion des Domaines</h1>
         <div className="header-actions">
-          <ImportDomainsButton />
-          <ImportABLLSTasksButton />
           <button className="btn-primary" onClick={() => setShowDomainForm(true)}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -293,7 +289,7 @@ export default function DomainsManagement() {
 
       {/* Formulaire Domaine */}
       {showDomainForm && (
-        <div className="modal-overlay" onClick={handleCancelDomain}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingDomain ? 'Modifier le domaine' : 'Créer un domaine'}</h2>
@@ -338,7 +334,7 @@ export default function DomainsManagement() {
 
       {/* Formulaire Génération de Tâches */}
       {showGenerateTasksForm && (
-        <div className="modal-overlay" onClick={handleCancelGenerateTasks}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Générer des tâches vides</h2>
@@ -415,7 +411,7 @@ export default function DomainsManagement() {
 
       {/* Formulaire Sous-domaine */}
       {showSubdomainForm && (
-        <div className="modal-overlay" onClick={handleCancelSubdomain}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingSubdomain ? 'Modifier le sous-domaine' : 'Créer un sous-domaine'}</h2>
@@ -581,7 +577,7 @@ export default function DomainsManagement() {
 
       {/* Modal des sous-domaines */}
       {showSubdomainsModal && selectedDomainForModal && (
-        <div className="modal-overlay" onClick={() => setShowSubdomainsModal(false)}>
+        <div className="modal-overlay">
           <div className="modal-content modal-subdomains" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <div className="modal-header-content">

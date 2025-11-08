@@ -46,6 +46,7 @@ export default function TasksManagement() {
   const [availableTags, setAvailableTags] = useState<string[]>([])
   const [openSubdomains, setOpenSubdomains] = useState<Record<string, boolean>>({})
   const [selectedDomainId, setSelectedDomainId] = useState<string | null>(null)
+  const [showCriterionForm, setShowCriterionForm] = useState(false)
 
   useEffect(() => {
     loadTasks()
@@ -161,6 +162,7 @@ export default function TasksManagement() {
         resourceIds: [] 
       })
       setCriterionSelectedTags([])
+      setShowCriterionForm(false) // Fermer le formulaire après l'ajout
     }
   }
 
@@ -185,18 +187,6 @@ export default function TasksManagement() {
     setEditingCriterionIndex(index)
   }
 
-  const cancelEditCriterion = () => {
-    setEditingCriterionIndex(null)
-    setCurrentCriterion({ 
-      title: '', 
-      videoUrl: '', 
-      description: '', 
-      baseline: '', 
-      technicalDetails: '', 
-      resourceIds: [] 
-    })
-    setCriterionSelectedTags([])
-  }
 
   const removeCriterion = (index: number) => {
     setCriteria(criteria.filter((_, i) => i !== index))
@@ -211,6 +201,7 @@ export default function TasksManagement() {
       })
       setCriterionSelectedTags([])
       setEditingCriterionIndex(null)
+      setShowCriterionForm(false)
     }
   }
 
@@ -243,6 +234,17 @@ export default function TasksManagement() {
     setSelectedTags([])
     setCriteria([])
     setShowForm(false)
+    setShowCriterionForm(false)
+    setCurrentCriterion({
+      title: '',
+      videoUrl: '',
+      description: '',
+      baseline: '',
+      technicalDetails: '',
+      resourceIds: []
+    })
+    setCriterionSelectedTags([])
+    setEditingCriterionIndex(null)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -387,7 +389,7 @@ export default function TasksManagement() {
 
 
       {showForm && (
-        <div className="task-modal-overlay" onClick={handleCancelEdit}>
+        <div className="task-modal-overlay">
           <div className="task-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="task-modal-header">
               <h2>{editingTask ? 'Modifier la tâche' : 'Créer une nouvelle tâche'}</h2>
@@ -639,14 +641,30 @@ export default function TasksManagement() {
 
             {/* Section Critères */}
             <div className="criteria-section-form">
-              <h3>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="9 11 12 14 22 4"/>
-                  <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                </svg>
-                Critères liés
-              </h3>
+              <div className="criteria-section-header">
+                <h3>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="9 11 12 14 22 4"/>
+                    <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                  </svg>
+                  Critères liés
+                </h3>
+                {!showCriterionForm && criteria.length === 0 && (
+                  <button 
+                    type="button" 
+                    className="btn-add-first-criterion" 
+                    onClick={() => setShowCriterionForm(true)}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="12" y1="5" x2="12" y2="19"/>
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Ajouter un critère
+                  </button>
+                )}
+              </div>
               
+              {showCriterionForm && (
               <div className="criteria-input-group">
                 <div className="form-row">
                   <div className="form-group">
@@ -854,17 +872,47 @@ export default function TasksManagement() {
                     </button>
                   )}
                   
-                  {editingCriterionIndex !== null && (
-                    <button type="button" className="btn-cancel-criterion" onClick={cancelEditCriterion}>
-                      Annuler
-                    </button>
-                  )}
+                  <button 
+                    type="button" 
+                    className="btn-cancel-criterion" 
+                    onClick={() => {
+                      setShowCriterionForm(false)
+                      setCurrentCriterion({
+                        title: '',
+                        videoUrl: '',
+                        description: '',
+                        baseline: '',
+                        technicalDetails: '',
+                        resourceIds: []
+                      })
+                      setCriterionSelectedTags([])
+                    }}
+                  >
+                    Annuler
+                  </button>
+                  
                 </div>
               </div>
+              )}
 
               {criteria.length > 0 && (
                 <div className="criteria-list-form">
-                  <h4>Critères ajoutés ({criteria.length})</h4>
+                  <div className="criteria-list-header">
+                    <h4>Critères ajoutés ({criteria.length})</h4>
+                    {!showCriterionForm && (
+                      <button 
+                        type="button" 
+                        className="btn-add-criterion-from-list" 
+                        onClick={() => setShowCriterionForm(true)}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="12" y1="5" x2="12" y2="19"/>
+                          <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Ajouter
+                      </button>
+                    )}
+                  </div>
                   {criteria.map((criterion, index) => (
                     <div key={index} className={`criterion-item-form ${editingCriterionIndex === index ? 'editing' : ''}`}>
                       <div className="criterion-info">
@@ -877,7 +925,7 @@ export default function TasksManagement() {
                         </div>
                       </div>
                       <div className="criterion-actions">
-                        <button type="button" className="btn-edit-criterion" onClick={() => editCriterion(index)}>
+                        <button type="button" className="btn-edit-criterion" onClick={() => { editCriterion(index); setShowCriterionForm(true); }}>
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
                             <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>

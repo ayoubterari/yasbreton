@@ -17,10 +17,8 @@ export default function PublicHome({ onOpenLogin, onOpenRegister }: PublicHomePr
             <h1>Centre Yasbreton</h1>
           </div>
           <nav className="nav-menu">
-            <button onClick={() => navigate('/formations')} className="nav-link-btn">Formations</button>
             <button onClick={() => navigate('/resources')} className="nav-link-btn">Ressources</button>
             <button onClick={() => navigate('/tasks')} className="nav-link-btn">Tâches</button>
-            <button onClick={() => navigate('/domains')} className="nav-link-btn">Domaines</button>
           </nav>
           <div className="auth-buttons">
             <button onClick={onOpenLogin} className="btn-login">
@@ -50,8 +48,8 @@ export default function PublicHome({ onOpenLogin, onOpenRegister }: PublicHomePr
             <button onClick={onOpenRegister} className="btn-primary-hero">
               Commencer gratuitement
             </button>
-            <button onClick={() => navigate('/formations')} className="btn-secondary-hero">
-              Découvrir les formations
+            <button onClick={() => navigate('/resources')} className="btn-secondary-hero">
+              Découvrir les ressources
             </button>
           </div>
         </div>
@@ -75,45 +73,6 @@ export default function PublicHome({ onOpenLogin, onOpenRegister }: PublicHomePr
           </p>
           
           <div className="features-grid">
-            {/* Formations Card */}
-            <div className="feature-card" onClick={() => navigate('/formations')}>
-              <div className="feature-card-header">
-                <div className="feature-icon formations-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                  </svg>
-                </div>
-                <h3>Formations</h3>
-              </div>
-              <p className="feature-description">
-                Des formations complètes et structurées pour développer vos compétences parentales
-                et comprendre les méthodes éducatives modernes.
-              </p>
-              <div className="feature-stats">
-                <div className="stat-badge">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                  </svg>
-                  <span>Certifiées</span>
-                </div>
-                <div className="stat-badge">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                  </svg>
-                  <span>Expert</span>
-                </div>
-              </div>
-              <button className="feature-btn">
-                Voir les formations
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </button>
-            </div>
-
             {/* Ressources Card */}
             <div className="feature-card" onClick={() => navigate('/resources')}>
               <div className="feature-card-header">
@@ -186,46 +145,6 @@ export default function PublicHome({ onOpenLogin, onOpenRegister }: PublicHomePr
               </div>
               <button className="feature-btn">
                 Explorer les tâches
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </button>
-            </div>
-
-            {/* Domaines Card */}
-            <div className="feature-card" onClick={() => navigate('/domains')}>
-              <div className="feature-card-header">
-                <div className="feature-icon domains-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-                  </svg>
-                </div>
-                <h3>Domaines</h3>
-              </div>
-              <p className="feature-description">
-                Naviguez par domaines de compétences pour trouver rapidement
-                les tâches et activités adaptées à vos besoins.
-              </p>
-              <div className="feature-stats">
-                <div className="stat-badge">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="3" width="7" height="7"/>
-                    <rect x="14" y="3" width="7" height="7"/>
-                    <rect x="14" y="14" width="7" height="7"/>
-                    <rect x="3" y="14" width="7" height="7"/>
-                  </svg>
-                  <span>Organisé</span>
-                </div>
-                <div className="stat-badge">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="8"/>
-                    <path d="m21 21-4.35-4.35"/>
-                  </svg>
-                  <span>Recherche</span>
-                </div>
-              </div>
-              <button className="feature-btn">
-                Parcourir les domaines
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>

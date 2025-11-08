@@ -1,6 +1,27 @@
 # Créer un compte administrateur
 
-## Méthode 1 : Via la console Convex
+## Méthode 1 : Via le script d'initialisation (RECOMMANDÉ)
+
+Le fichier `backend/convex/initAdmin.ts` a été créé pour faciliter la création d'un compte admin.
+
+### Étapes :
+
+1. Allez sur https://dashboard.convex.dev
+2. Sélectionnez votre projet **yasbreton**
+3. Allez dans l'onglet **"Functions"**
+4. Cherchez la fonction `initAdmin:init`
+5. Cliquez sur **"Run"** (pas besoin de paramètres)
+6. Le système créera automatiquement un compte admin avec les identifiants par défaut
+
+**Identifiants créés :**
+- Email: `admin@centre-yasbreton.fr`
+- Mot de passe: `admin123`
+
+> ⚠️ Si un admin existe déjà, la fonction retournera un message indiquant qu'un admin existe déjà.
+
+## Méthode 2 : Via la fonction createAdmin
+
+Si vous voulez créer un admin avec des identifiants personnalisés :
 
 1. Allez sur https://dashboard.convex.dev
 2. Sélectionnez votre projet
@@ -9,55 +30,13 @@
 
 ```json
 {
-  "email": "admin@centre-yasbreton.fr",
-  "password": "admin123",
-  "nom": "Admin",
-  "prenom": "Centre",
+  "email": "votre-email@exemple.fr",
+  "password": "votre-mot-de-passe",
+  "nom": "Votre Nom",
+  "prenom": "Votre Prénom",
   "telephone": "0600000000"
 }
 ```
-
-## Méthode 2 : Via le code (temporaire)
-
-Vous pouvez créer un fichier temporaire pour initialiser l'admin :
-
-```typescript
-// backend/convex/initAdmin.ts
-import { mutation } from "./_generated/server";
-
-export const init = mutation({
-  args: {},
-  handler: async (ctx) => {
-    // Vérifier si un admin existe déjà
-    const existingAdmin = await ctx.db
-      .query("users")
-      .filter((q) => q.eq(q.field("role"), "admin"))
-      .first();
-
-    if (existingAdmin) {
-      return { message: "Un admin existe déjà" };
-    }
-
-    // Créer le compte admin
-    const adminId = await ctx.db.insert("users", {
-      nom: "Admin",
-      prenom: "Centre",
-      email: "admin@centre-yasbreton.fr",
-      password: "admin123", // À changer immédiatement !
-      telephone: "0600000000",
-      role: "admin",
-      createdAt: Date.now(),
-    });
-
-    return { 
-      message: "Admin créé avec succès",
-      adminId 
-    };
-  },
-});
-```
-
-Puis exécutez cette fonction une seule fois via la console Convex.
 
 ## Connexion admin
 

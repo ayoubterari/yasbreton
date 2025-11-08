@@ -240,7 +240,7 @@ export default function FormationsManagement() {
 
       {/* Formulaire Modal */}
       {showForm && (
-        <div className="modal-overlay" onClick={resetForm}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>{editingFormation ? 'Modifier la formation' : 'Créer une formation'}</h2>

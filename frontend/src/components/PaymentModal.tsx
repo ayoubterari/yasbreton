@@ -108,7 +108,7 @@ export default function PaymentModal({ packageType, price, userId, onClose, onSu
   }
 
   return (
-    <div className="payment-modal-overlay" onClick={onClose}>
+    <div className="payment-modal-overlay">
       <div className="payment-modal" onClick={(e) => e.stopPropagation()}>
         <div className="payment-modal-header">
           <h2>Paiement sécurisé</h2>

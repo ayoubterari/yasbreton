@@ -169,7 +169,7 @@ export default function FileForm({ file, categories, onClose, onSuccess, userId 
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay">
       <div className="modal-content file-form-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{file ? 'Modifier le fichier' : 'Ajouter un fichier'}</h2>

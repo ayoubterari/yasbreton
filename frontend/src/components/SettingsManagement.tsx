@@ -245,7 +245,7 @@ export default function SettingsManagement() {
 
       {/* Modal de création */}
       {showCreateModal && (
-        <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Créer un utilisateur restreint</h3>

@@ -19,6 +19,7 @@ import type * as categories from "../categories.js";
 import type * as domains from "../domains.js";
 import type * as files from "../files.js";
 import type * as formations from "../formations.js";
+import type * as initAdmin from "../initAdmin.js";
 import type * as permissions from "../permissions.js";
 import type * as premium from "../premium.js";
 import type * as statistics from "../statistics.js";
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   domains: typeof domains;
   files: typeof files;
   formations: typeof formations;
+  initAdmin: typeof initAdmin;
   permissions: typeof permissions;
   premium: typeof premium;
   statistics: typeof statistics;

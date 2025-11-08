@@ -12,20 +12,10 @@ export default function VideoModal({ videoUrl, title, onClose }: VideoModalProps
     // Empêcher le scroll du body quand le modal est ouvert
     document.body.style.overflow = 'hidden'
     
-    // Fermer avec la touche Escape
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose()
-      }
-    }
-    
-    document.addEventListener('keydown', handleEscape)
-    
     return () => {
       document.body.style.overflow = 'unset'
-      document.removeEventListener('keydown', handleEscape)
     }
-  }, [onClose])
+  }, [])
 
   const getYoutubeEmbedUrl = (url: string) => {
     const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/)?.[1]
@@ -35,7 +25,7 @@ export default function VideoModal({ videoUrl, title, onClose }: VideoModalProps
   const embedUrl = getYoutubeEmbedUrl(videoUrl)
 
   return (
-    <div className="video-modal-overlay" onClick={onClose}>
+    <div className="video-modal-overlay">
       <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="video-modal-header">
           <h3>{title}</h3>

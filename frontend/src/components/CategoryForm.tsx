@@ -91,7 +91,7 @@ export default function CategoryForm({
   })
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay">
       <div className="modal-content category-form-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>

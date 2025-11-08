@@ -8,12 +8,10 @@ import TagsManagement from './TagsManagement'
 import Statistics from './Statistics'
 import TasksManagement from './TasksManagement'
 import DomainsManagement from './DomainsManagement'
-import FormationsManagement from './FormationsManagement'
-import SettingsManagement from './SettingsManagement'
 import DashboardOverview from './DashboardOverview'
 import './AdminDashboard.css'
 
-type Module = 'dashboard' | 'users' | 'settings' | 'resources-files' | 'resources-categories' | 'resources-tags' | 'resources-stats' | 'domains' | 'tasks' | 'formations'
+type Module = 'dashboard' | 'users' | 'resources-files' | 'resources-categories' | 'resources-tags' | 'resources-stats' | 'domains' | 'tasks'
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth()
@@ -48,7 +46,6 @@ export default function AdminDashboard() {
     else if (path === '/admin/statistics') setActiveModule('resources-stats')
     else if (path === '/admin/domains') setActiveModule('domains')
     else if (path === '/admin/tasks') setActiveModule('tasks')
-    else if (path === '/admin/formations') setActiveModule('formations')
   }, [location.pathname])
 
   // Fonction pour changer de module et mettre à jour l'URL
@@ -61,7 +58,6 @@ export default function AdminDashboard() {
     else if (module === 'resources-stats') navigate('/admin/statistics')
     else if (module === 'domains') navigate('/admin/domains')
     else if (module === 'tasks') navigate('/admin/tasks')
-    else if (module === 'formations') navigate('/admin/formations')
     else navigate('/admin')
   }
 
@@ -214,17 +210,6 @@ export default function AdminDashboard() {
             <span>Tâches</span>
           </button>
 
-          <button
-            className={`nav-item ${activeModule === 'formations' ? 'active' : ''}`}
-            onClick={() => changeModule('formations')}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </svg>
-            <span>Formations</span>
-          </button>
-
           {/* Ressources avec sous-menu */}
           <div className="nav-group">
             <button
@@ -297,17 +282,6 @@ export default function AdminDashboard() {
               </button>
             </div>
           </div>
-
-          <button
-            className={`nav-item ${activeModule === 'settings' ? 'active' : ''}`}
-            onClick={() => changeModule('settings')}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24" />
-            </svg>
-            <span>Paramètres</span>
-          </button>
         </nav>
 
         <div className="sidebar-footer">
@@ -333,7 +307,6 @@ export default function AdminDashboard() {
               {activeModule === 'resources-categories' && 'Catégories'}
               {activeModule === 'resources-tags' && 'Tags'}
               {activeModule === 'resources-stats' && 'Statistiques'}
-              {activeModule === 'settings' && 'Paramètres'}
             </h1>
           </div>
           <div className="topbar-right">
@@ -552,22 +525,10 @@ export default function AdminDashboard() {
             <TasksManagement />
           )}
 
-          {/* Module Formations */}
-          {activeModule === 'formations' && (
-            <FormationsManagement />
-          )}
-
           {/* Module Dashboard */}
           {activeModule === 'dashboard' && (
             <div className="admin-container">
               <DashboardOverview />
-            </div>
-          )}
-
-          {/* Module Paramètres */}
-          {activeModule === 'settings' && (
-            <div className="admin-container">
-              <SettingsManagement />
             </div>
           )}
         </main>
@@ -575,7 +536,7 @@ export default function AdminDashboard() {
 
       {/* Modal d'édition d'utilisateur */}
       {showEditModal && editingUser && (
-        <div className="modal-overlay" onClick={handleCancelEdit}>
+        <div className="modal-overlay">
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Modifier l'utilisateur</h2>

@@ -55,7 +55,7 @@ export default function ImportDomainsButton() {
       </button>
 
       {showConfirm && (
-        <div className="modal-overlay" onClick={() => setShowConfirm(false)}>
+        <div className="modal-overlay">
           <div className="modal-content-import" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header-import">
               <h2>Confirmer l'importation</h2>

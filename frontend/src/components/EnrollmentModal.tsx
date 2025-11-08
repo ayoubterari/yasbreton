@@ -63,7 +63,7 @@ export default function EnrollmentModal({ isOpen, onClose, formation, onOpenLogi
   }
 
   return (
-    <div className="enrollment-modal-overlay" onClick={onClose}>
+    <div className="enrollment-modal-overlay">
       <div className="enrollment-modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="enrollment-modal-close" onClick={onClose}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

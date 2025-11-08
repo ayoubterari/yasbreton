@@ -450,7 +450,7 @@ export default function FormationDetailPage() {
 
       {/* Modal Vidéo */}
       {showVideoModal && selectedLesson && selectedLesson.videoUrl && (
-        <div className="video-modal-overlay" onClick={closeVideoModal}>
+        <div className="video-modal-overlay">
           <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="video-modal-header">
               <h3>{selectedLesson.title}</h3>
@@ -487,7 +487,7 @@ export default function FormationDetailPage() {
 
       {/* Modal Ressource */}
       {showResourceModal && selectedResource && selectedLesson && (
-        <div className="video-modal-overlay" onClick={closeResourceModal}>
+        <div className="video-modal-overlay">
           <div className="video-modal-content resource-modal" onClick={(e) => e.stopPropagation()}>
             <div className="video-modal-header">
               <h3>{selectedLesson.title}</h3>
@@ -573,7 +573,7 @@ export default function FormationDetailPage() {
 
       {/* Modal Plan de la formation */}
       {showPlanModal && (
-        <div className="video-modal-overlay" onClick={() => setShowPlanModal(false)}>
+        <div className="video-modal-overlay">
           <div className="video-modal-content plan-modal" onClick={(e) => e.stopPropagation()}>
             <div className="video-modal-header">
               <h3>Plan de la formation</h3>
@@ -654,7 +654,7 @@ export default function FormationDetailPage() {
 
       {/* Modal Description */}
       {showDescriptionModal && (
-        <div className="video-modal-overlay" onClick={() => setShowDescriptionModal(false)}>
+        <div className="video-modal-overlay">
           <div className="video-modal-content description-modal" onClick={(e) => e.stopPropagation()}>
             <div className="video-modal-header">
               <h3>Description de la formation</h3>
